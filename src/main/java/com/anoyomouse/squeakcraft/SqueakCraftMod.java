@@ -2,11 +2,12 @@ package com.anoyomouse.squeakcraft;
 
 import org.apache.logging.log4j.Logger;
 
-import com.anoyomouse.squeakcraft.configuration.ConfigurationHandler;
+import com.anoyomouse.squeakcraft.handler.ConfigurationHandler;
 import com.anoyomouse.squeakcraft.proxy.IProxy;
 import com.anoyomouse.squeakcraft.reference.Reference;
 
 import net.minecraft.init.Blocks;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.InstanceFactory;
@@ -15,7 +16,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
-@Mod(modid = Reference.MODID, version = Reference.VERSION, name = Reference.NAME)
+@Mod(modid = Reference.MODID, version = Reference.VERSION, name = Reference.NAME, guiFactory = Reference.GUI_FACTORY)
 public class SqueakCraftMod
 {
 	@Mod.Instance(Reference.MODID)
@@ -34,6 +35,7 @@ public class SqueakCraftMod
     	modLogger = event.getModLog();
     	modLogger.info("PreInitalization");
     	ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+    	FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
     }
     
     @EventHandler
