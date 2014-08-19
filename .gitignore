@@ -1,3 +1,9 @@
 ignore/
 *~
 bin/
+.classpath
+.project
+.gradle/
+eclipse/
+.settings/
+run/logs/
