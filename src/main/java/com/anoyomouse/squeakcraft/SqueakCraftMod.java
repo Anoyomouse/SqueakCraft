@@ -2,6 +2,7 @@ package com.anoyomouse.squeakcraft;
 
 import org.apache.logging.log4j.Logger;
 
+import com.anoyomouse.squeakcraft.configuration.ConfigurationHandler;
 import com.anoyomouse.squeakcraft.proxy.IProxy;
 import com.anoyomouse.squeakcraft.reference.Reference;
 
@@ -29,9 +30,10 @@ public class SqueakCraftMod
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-    	// Initalize the logger
+    	// Initialize the logger
     	modLogger = event.getModLog();
     	modLogger.info("PreInitalization");
+    	ConfigurationHandler.init(event.getSuggestedConfigurationFile());
     }
     
     @EventHandler
