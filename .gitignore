@@ -7,3 +7,8 @@ bin/
 eclipse/
 .settings/
 run/logs/
+out/
+run/
+*.iml
+*.ipr
+*.iws

@@ -13,9 +13,9 @@ public class Recipies
 		// Vanilla Items
 		// GameRegistry.addRecipe(new ItemStack(ModItems.squeakLeaf), " a ", "aaa", " a ", "a", new ItemStack(Items.stick));
 		// GameRegistry.addShapelessRecipe(new ItemStack(ModBlocks.flag), new ItemStack(ModItems.squeakLeaf), new ItemStack(ModItems.squeakLeaf));
-		
+
 		// Using Ore Dictionary
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.squeakLeaf), " a ", "aaa", " a ", "a", "stickWood"));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.squeakLeaf), " s ", "sss", " s ", 's', "stickWood"));
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModBlocks.flag), new ItemStack(ModItems.squeakLeaf), new ItemStack(ModItems.squeakLeaf)));
 	}
 }
