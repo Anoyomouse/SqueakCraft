@@ -8,9 +8,10 @@ import net.minecraft.item.Item;
 
 public class CreativeTabSqueakCraft
 {
-	public static final CreativeTabs SQUEAKCRAFT_TAB = new CreativeTabs(Reference.MODID)
+	public static final CreativeTabs SQUEAKCRAFT_TAB = new CreativeTabs(
+			Reference.MODID)
 	{
-		
+
 		@Override
 		public Item getTabIconItem()
 		{

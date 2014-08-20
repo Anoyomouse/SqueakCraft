@@ -8,11 +8,12 @@ import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.config.Configuration;
 
-public class ConfigurationHandler {
+public class ConfigurationHandler
+{
 	public static Configuration configuration;
-	
+
 	public static boolean testValue = false;
-	
+
 	public static void init(File configFile)
 	{
 		if (configuration == null)
@@ -21,9 +22,10 @@ public class ConfigurationHandler {
 			loadConfiguration();
 		}
 	}
-	
+
 	@SubscribeEvent
-	public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
+	public void onConfigurationChangedEvent(
+			ConfigChangedEvent.OnConfigChangedEvent event)
 	{
 		if (event.modID.equalsIgnoreCase(Reference.MODID))
 		{
@@ -37,13 +39,13 @@ public class ConfigurationHandler {
 		try
 		{
 			// Read the ccnfiguration file
-			testValue = configuration.get(Configuration.CATEGORY_GENERAL, "configValue", false, "This is an example config value").getBoolean();
-		}
-		catch (Exception e)
+			testValue = configuration.get(Configuration.CATEGORY_GENERAL,
+					"configValue", false, "This is an example config value")
+					.getBoolean();
+		} catch (Exception e)
 		{
 			// Log the error
-		}
-		finally
+		} finally
 		{
 			// Save (Create) the configuration file
 			if (configuration.hasChanged())

@@ -7,9 +7,10 @@ import com.anoyomouse.squeakcraft.reference.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @GameRegistry.ObjectHolder(Reference.MODID)
-public class ModItems {
+public class ModItems
+{
 	public static final ItemSqueakCraft squeakLeaf = new ItemSqueakLeaf();
-	
+
 	public static void init()
 	{
 		GameRegistry.registerItem(squeakLeaf, "squeakLeaf");

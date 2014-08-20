@@ -23,22 +23,24 @@ public class BlockSqueakCraft extends Block
 		super(Material.rock);
 		this.setCreativeTab(CreativeTabSqueakCraft.SQUEAKCRAFT_TAB);
 	}
-	
+
 	@Override
-    public String getUnlocalizedName()
-    {
-        return String.format("tile.%s%s", Reference.MODID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
-    }
+	public String getUnlocalizedName()
+	{
+		return String.format("tile.%s%s", Reference.MODID.toLowerCase() + ":",
+				getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister iconRegister)
-    {
-        blockIcon = iconRegister.registerIcon(String.format("%s", getUnwrappedUnlocalizedName(this.getUnlocalizedName())));
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister iconRegister)
+	{
+		blockIcon = iconRegister.registerIcon(String.format("%s",
+				getUnwrappedUnlocalizedName(this.getUnlocalizedName())));
+	}
 
-    protected String getUnwrappedUnlocalizedName(String unlocalizedName)
-    {
-        return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
-    }
+	protected String getUnwrappedUnlocalizedName(String unlocalizedName)
+	{
+		return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
+	}
 }

@@ -1,5 +1,6 @@
 package com.anoyomouse.squeakcraft.proxy;
 
-public interface IProxy {
+public interface IProxy
+{
 
 }

@@ -26,32 +26,32 @@ public class SqueakCraftMod
 
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.SERVER_PROXY)
 	public static IProxy proxy;
-	
+
 	// This is my logger!
-    private Logger modLogger;
-    
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
-    	// Initialize the logger
-    	modLogger = event.getModLog();
-    	modLogger.info("PreInitalization");
-    	ConfigurationHandler.init(event.getSuggestedConfigurationFile());
-    	FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
-    	
-    	ModItems.init();
-    	ModBlocks.init();
-    }
-    
-    @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
-    	modLogger.info("Initalization");
-    }
-    
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event)
-    {
-    	modLogger.info("PostInitalization");
-    }
+	private Logger modLogger;
+
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent event)
+	{
+		// Initialize the logger
+		modLogger = event.getModLog();
+		modLogger.info("PreInitalization");
+		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
+
+		ModItems.init();
+		ModBlocks.init();
+	}
+
+	@EventHandler
+	public void init(FMLInitializationEvent event)
+	{
+		modLogger.info("Initalization");
+	}
+
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event)
+	{
+		modLogger.info("PostInitalization");
+	}
 }

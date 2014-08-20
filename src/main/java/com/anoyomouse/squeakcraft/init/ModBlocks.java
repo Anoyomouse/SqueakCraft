@@ -10,7 +10,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class ModBlocks
 {
 	public static final BlockSqueakCraft flag = new BlockFlag();
-	
+
 	public static void init()
 	{
 		GameRegistry.registerBlock(flag, "flag");

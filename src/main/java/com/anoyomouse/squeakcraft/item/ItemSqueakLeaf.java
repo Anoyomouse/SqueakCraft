@@ -1,6 +1,7 @@
 package com.anoyomouse.squeakcraft.item;
 
-public class ItemSqueakLeaf extends ItemSqueakCraft {
+public class ItemSqueakLeaf extends ItemSqueakCraft
+{
 	public ItemSqueakLeaf()
 	{
 		super();
