@@ -3,6 +3,7 @@ package com.anoyomouse.squeakcraft;
 import org.apache.logging.log4j.Logger;
 
 import com.anoyomouse.squeakcraft.handler.ConfigurationHandler;
+import com.anoyomouse.squeakcraft.init.ModBlocks;
 import com.anoyomouse.squeakcraft.init.ModItems;
 import com.anoyomouse.squeakcraft.proxy.IProxy;
 import com.anoyomouse.squeakcraft.reference.Reference;
@@ -39,6 +40,7 @@ public class SqueakCraftMod
     	FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
     	
     	ModItems.init();
+    	ModBlocks.init();
     }
     
     @EventHandler
