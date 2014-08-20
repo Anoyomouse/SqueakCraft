@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import com.anoyomouse.squeakcraft.handler.ConfigurationHandler;
 import com.anoyomouse.squeakcraft.init.ModBlocks;
 import com.anoyomouse.squeakcraft.init.ModItems;
+import com.anoyomouse.squeakcraft.init.Recipies;
 import com.anoyomouse.squeakcraft.proxy.IProxy;
 import com.anoyomouse.squeakcraft.reference.Reference;
 
@@ -47,6 +48,7 @@ public class SqueakCraftMod
 	public void init(FMLInitializationEvent event)
 	{
 		modLogger.info("Initalization");
+		Recipies.init();
 	}
 
 	@EventHandler
