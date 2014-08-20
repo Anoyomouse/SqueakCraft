@@ -1,5 +1,6 @@
 package com.anoyomouse.squeakcraft.block;
 
+import com.anoyomouse.squeakcraft.creativetab.CreativeTabSqueakCraft;
 import com.anoyomouse.squeakcraft.reference.Reference;
 
 import cpw.mods.fml.relauncher.Side;
@@ -14,13 +15,13 @@ public class BlockSqueakCraft extends Block
 	protected BlockSqueakCraft(Material material)
 	{
 		super(material);
-		this.setCreativeTab(CreativeTabs.tabMisc);
+		this.setCreativeTab(CreativeTabSqueakCraft.SQUEAKCRAFT_TAB);
 	}
 
 	public BlockSqueakCraft()
 	{
 		super(Material.rock);
-		this.setCreativeTab(CreativeTabs.tabMisc);
+		this.setCreativeTab(CreativeTabSqueakCraft.SQUEAKCRAFT_TAB);
 	}
 	
 	@Override

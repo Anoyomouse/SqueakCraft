@@ -1,5 +1,6 @@
 package com.anoyomouse.squeakcraft.item;
 
+import com.anoyomouse.squeakcraft.creativetab.CreativeTabSqueakCraft;
 import com.anoyomouse.squeakcraft.reference.Reference;
 
 import cpw.mods.fml.relauncher.Side;
@@ -14,7 +15,7 @@ public class ItemSqueakCraft extends Item {
 	{
 		super();
 		this.maxStackSize = 1;
-		this.setCreativeTab(CreativeTabs.tabMisc);
+		this.setCreativeTab(CreativeTabSqueakCraft.SQUEAKCRAFT_TAB);
 	}
 	
     @Override
