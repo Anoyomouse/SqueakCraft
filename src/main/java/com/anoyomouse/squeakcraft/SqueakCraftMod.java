@@ -1,5 +1,7 @@
 package com.anoyomouse.squeakcraft;
 
+import com.anoyomouse.squeakcraft.client.handler.KeyInputEventHandler;
+import com.anoyomouse.squeakcraft.utility.LogHelper;
 import org.apache.logging.log4j.Logger;
 
 import com.anoyomouse.squeakcraft.handler.ConfigurationHandler;
@@ -36,9 +38,11 @@ public class SqueakCraftMod
 	{
 		// Initialize the logger
 		modLogger = event.getModLog();
+		LogHelper.setLogger(modLogger);
 		modLogger.info("PreInitalization");
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
+		proxy.registerKeyBindings();
 
 		ModItems.init();
 		ModBlocks.init();
@@ -48,6 +52,9 @@ public class SqueakCraftMod
 	public void init(FMLInitializationEvent event)
 	{
 		modLogger.info("Initalization");
+
+		FMLCommonHandler.instance().bus().register(new KeyInputEventHandler());
+
 		Recipies.init();
 	}
 

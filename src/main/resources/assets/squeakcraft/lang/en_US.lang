@@ -1,3 +1,13 @@
-item.squeakcraft:squeakLeaf.name=Squeak Leaf ... of Squeak
-tile.squeakcraft:flag.name=Flag block of ZAness
+# Keys
+keys.squeakcraft.category=Squeak Craft
+keys.squeakcraft.charge=Charge
+keys.squeakcraft.release=Release
+
+# Creative tabs
 itemGroup.squeakcraft=Squeaky Items!
+
+# Items
+item.squeakcraft:squeakLeaf.name=Squeak Leaf ... of Squeak
+
+# Blocks
+tile.squeakcraft:flag.name=Flag block of ZAness
