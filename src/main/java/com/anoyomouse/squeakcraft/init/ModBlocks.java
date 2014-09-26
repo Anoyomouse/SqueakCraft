@@ -2,6 +2,9 @@ package com.anoyomouse.squeakcraft.init;
 
 import com.anoyomouse.squeakcraft.block.BlockFlag;
 import com.anoyomouse.squeakcraft.block.BlockSqueakCraft;
+import com.anoyomouse.squeakcraft.block.BlockStockPile;
+import com.anoyomouse.squeakcraft.item.ItemBlockStockPile;
+import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.Reference;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -10,9 +13,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class ModBlocks
 {
 	public static final BlockSqueakCraft flag = new BlockFlag();
+	public static final BlockSqueakCraft stockPile = new BlockStockPile();
 
 	public static void init()
 	{
-		GameRegistry.registerBlock(flag, "flag");
+		GameRegistry.registerBlock(flag, Names.Blocks.FLAG);
+		GameRegistry.registerBlock(stockPile, ItemBlockStockPile.class, Names.Blocks.STOCKPILE);
 	}
 }

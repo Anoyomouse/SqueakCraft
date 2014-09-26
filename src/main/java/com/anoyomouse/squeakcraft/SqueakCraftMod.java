@@ -1,7 +1,10 @@
 package com.anoyomouse.squeakcraft;
 
 import com.anoyomouse.squeakcraft.client.handler.KeyInputEventHandler;
+import com.anoyomouse.squeakcraft.handler.GuiHandler;
+import com.anoyomouse.squeakcraft.network.PacketHandler;
 import com.anoyomouse.squeakcraft.utility.LogHelper;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.Logger;
 
 import com.anoyomouse.squeakcraft.handler.ConfigurationHandler;
@@ -40,7 +43,11 @@ public class SqueakCraftMod
 		modLogger = event.getModLog();
 		LogHelper.setLogger(modLogger);
 		modLogger.info("PreInitalization");
+
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+
+		PacketHandler.init();
+
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		proxy.registerKeyBindings();
 
@@ -53,7 +60,18 @@ public class SqueakCraftMod
 	{
 		modLogger.info("Initalization");
 
+		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
+
 		FMLCommonHandler.instance().bus().register(new KeyInputEventHandler());
+
+		// Initialize mod tile entities
+		proxy.registerTileEntities();
+
+		// Initialize custom rendering and pre-load textures (Client only)
+		proxy.initRenderingAndTextures();
+
+		// Register the Items Event Handler
+		proxy.registerEventHandlers();
 
 		Recipies.init();
 	}

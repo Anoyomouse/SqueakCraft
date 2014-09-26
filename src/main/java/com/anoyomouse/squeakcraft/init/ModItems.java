@@ -2,6 +2,7 @@ package com.anoyomouse.squeakcraft.init;
 
 import com.anoyomouse.squeakcraft.item.ItemSqueakCraft;
 import com.anoyomouse.squeakcraft.item.ItemSqueakLeaf;
+import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.Reference;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -13,6 +14,6 @@ public class ModItems
 
 	public static void init()
 	{
-		GameRegistry.registerItem(squeakLeaf, "squeakLeaf");
+		GameRegistry.registerItem(squeakLeaf, Names.Items.SQUEAKLEAF);
 	}
 }

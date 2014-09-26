@@ -12,7 +12,7 @@ public class GuiFactory implements IModGuiFactory
 	@Override
 	public void initialize(Minecraft minecraftInstance)
 	{
-		// TODO Auto-generated method stub
+
 	}
 
 	@Override
@@ -24,15 +24,12 @@ public class GuiFactory implements IModGuiFactory
 	@Override
 	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public RuntimeOptionGuiHandler getHandlerFor(
-			RuntimeOptionCategoryElement element)
+	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
