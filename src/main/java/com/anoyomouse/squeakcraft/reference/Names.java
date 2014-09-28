@@ -33,6 +33,7 @@ public final class Names
 		public static final String VANILLA_INVENTORY = "container.inventory";
 		public static final String VANILLA_CRAFTING = "container.crafting";
 		public static final String STOCKPILE = "container." + Reference.MODID + ":" + Blocks.STOCKPILE;
+		public static final String TRANSPORT_PIPE = "container." + Reference.MODID + ":" + Blocks.TRANSPORT_PIPE;
 	}
 
 	public static final class Items
@@ -44,11 +45,21 @@ public final class Names
 	{
 		public static final String STOCKPILE_BASE = "StockpileBase";
 		public static final String STOCKPILE_CRATE = "StockpileChest";
+
+		public static final String TRANSPORT_PIPE_LONG = "PipeLong";
+		public static final String TRANSPORT_PIPE_CORNER = "PipeCorner";
+		public static final String TRANSPORT_PIPE_CORNER1 = "Corner1";
+		public static final String TRANSPORT_PIPE_CORNER2 = "Corner2";
+		public static final String TRANSPORT_PIPE_CORNER3 = "Corner3";
+		public static final String TRANSPORT_PIPE_CORNER4 = "Corner4";
+		public static final String TRANSPORT_PIPE_CORNER5 = "Corner5";
+		public static final String TRANSPORT_PIPE_CORNER6 = "Corner6";
 	}
 
 	public static final class Blocks
 	{
 		public static final String FLAG = "flag";
 		public static final String STOCKPILE = "stockPile";
+		public static final String TRANSPORT_PIPE = "transportPipe";
 	}
 }

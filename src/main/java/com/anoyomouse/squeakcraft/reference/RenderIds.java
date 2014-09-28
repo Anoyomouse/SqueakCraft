@@ -6,4 +6,5 @@ package com.anoyomouse.squeakcraft.reference;
 public final class RenderIds
 {
 	public static int stockpile;
+	public static int transportPipe;
 }

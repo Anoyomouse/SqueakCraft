@@ -1,13 +1,18 @@
 package com.anoyomouse.squeakcraft.tileentity;
 
+import com.anoyomouse.squeakcraft.block.BlockStockPile;
 import com.anoyomouse.squeakcraft.init.ModBlocks;
 import com.anoyomouse.squeakcraft.inventory.ContainerStockPile;
+import com.anoyomouse.squeakcraft.network.PacketHandler;
+import com.anoyomouse.squeakcraft.network.message.MessageTileEntityStockPile;
 import com.anoyomouse.squeakcraft.reference.Names;
+import com.anoyomouse.squeakcraft.utility.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.Packet;
 
 /**
  * Created by Anoyomouse on 2014/09/26.
@@ -22,7 +27,7 @@ public class TileEntityStockPile extends TileEntitySqueakCraft implements IInven
 	/**
 	 * Server sync counter (once per 20 ticks)
 	 */
-	private int ticksSinceSync;
+	private int ticksSinceSync = -1;
 
 	// Items in the stockpile
 	private ItemStack[] inventory;
@@ -84,7 +89,7 @@ public class TileEntityStockPile extends TileEntitySqueakCraft implements IInven
 	// Borrowed from IronChests
 	private void checkStacks()
 	{
-		if (worldObj != null && worldObj.isRemote)
+		if (worldObj == null || worldObj.isRemote)
 		{
 			return;
 		}
@@ -99,20 +104,48 @@ public class TileEntityStockPile extends TileEntitySqueakCraft implements IInven
 			}
 		}
 
+		LogHelper.info("StockPile (" + xCoord + "," + yCoord + "," + zCoord + ") - Has Stuff: " + hasStuff + " - Had Stuff: " + hadStuff);
+
+		// If we don't have stuff, but we had stuff, then we need to update the block
 		if (!hasStuff && hadStuff)
 		{
 			hadStuff = false;
-			if (worldObj != null)
-			{
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			}
-			return;
-		}
-		hadStuff = true;
-		if (worldObj != null)
-		{
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			LogHelper.info("StockPile (" + xCoord + "," + yCoord + "," + zCoord + ") has no stuff");
 		}
+		// If we have stuff, but we didn't have stuff, then we need to update the block
+		else if (hasStuff && !hadStuff)
+		{
+			hadStuff = true;
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			LogHelper.info("StockPile (" + xCoord + "," + yCoord + "," + zCoord + ") has stuff");
+		}
+	}
+
+	public int getInventoryItemFlags()
+	{
+		if (inventory == null)
+		{
+			return 0;
+		}
+
+		int flag = 0;
+		for (int i = 0; i < getSizeInventory(); i++)
+		{
+			if (inventory[i] != null)
+			{
+				flag |= 1 << i;
+			}
+		}
+
+		return flag;
+	}
+
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		checkStacks();
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityStockPile(this));
 	}
 
 	@Override
@@ -252,7 +285,20 @@ public class TileEntityStockPile extends TileEntitySqueakCraft implements IInven
 	{
 		super.updateEntity();
 
-		if (++ticksSinceSync % 20 * 4 == 0)
+		if (worldObj == null)
+		{
+			return;
+		}
+
+		if (!worldObj.isRemote && ticksSinceSync < 0)
+		{
+			worldObj.addBlockEvent(xCoord, yCoord, zCoord, ModBlocks.stockPile, 1, numUsingPlayers);
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			this.markDirty();
+		}
+
+		this.ticksSinceSync++;
+		if (ticksSinceSync % (20 * 4) == 0)
 		{
 			worldObj.addBlockEvent(xCoord, yCoord, zCoord, ModBlocks.stockPile, 1, numUsingPlayers);
 		}
@@ -262,16 +308,14 @@ public class TileEntityStockPile extends TileEntitySqueakCraft implements IInven
 	 * Called when a client event is received with the event number and argument, see World.sendClientEvent
 	 */
 	@Override
-	public boolean receiveClientEvent(int eventID, int numUsingPlayers)
+	public boolean receiveClientEvent(int eventID, int eventData)
 	{
 		if (eventID == 1)
 		{
-			this.numUsingPlayers = numUsingPlayers;
+			this.numUsingPlayers = eventData;
 			return true;
 		}
-		else
-		{
-			return super.receiveClientEvent(eventID, numUsingPlayers);
-		}
+
+		return super.receiveClientEvent(eventID, eventData);
 	}
 }

@@ -11,4 +11,5 @@ public class Models
 	public static final String MODEL_LOCATION = "models/";
 
 	public static final ResourceLocation STOCKPILE = ResourceLocationHelper.getResourceLocation(MODEL_LOCATION + "stockpile.obj");
+	public static final ResourceLocation TRANSPORT_PIPE = ResourceLocationHelper.getResourceLocation(MODEL_LOCATION + "Pipe.obj");
 }

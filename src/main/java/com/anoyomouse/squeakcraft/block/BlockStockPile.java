@@ -10,10 +10,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -29,6 +32,7 @@ public class BlockStockPile extends BlockSqueakCraft implements ITileEntityProvi
 		super(Material.wood);
 		this.setHardness(1.0f);
 		this.setBlockName(Names.Blocks.STOCKPILE);
+		this.setBlockBounds(0, 0, 0, 1, 0.5f, 1);
 	}
 
 	@Override
@@ -59,6 +63,110 @@ public class BlockStockPile extends BlockSqueakCraft implements ITileEntityProvi
 	public boolean isOpaqueCube()
 	{
 		return false;
+	}
+
+	@Override
+	public boolean isCollidable()
+	{
+		return true;
+	}
+
+	/**
+	 * Returns the bounding box of the wired rectangular prism to render.
+	 */
+	@SideOnly(Side.CLIENT)
+	@Override
+	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int xCoord, int yCoord, int zCoord)
+	{
+		this.setBlockBoundsBasedOnState(world, xCoord, yCoord, zCoord);
+		return super.getSelectedBoundingBoxFromPool(world, xCoord, yCoord, zCoord);
+	}
+
+	/**
+	 * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+	 * cleared to be reused)
+	 */
+	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int xCoord, int yCoord, int zCoord)
+	{
+		this.setBlockBoundsBasedOnState(world, xCoord, yCoord, zCoord);
+		return super.getCollisionBoundingBoxFromPool(world, xCoord, yCoord, zCoord);
+	}
+
+	/**
+	 * Updates the blocks bounds based on its current state. Args: world, x, y, z
+	 */
+	@Override
+	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te instanceof TileEntityStockPile)
+		{
+			TileEntityStockPile sp = (TileEntityStockPile)te;
+			int flags = sp.getInventoryItemFlags();
+
+			if (flags == 0)
+			{
+				this.setBlockBounds(0, 0, 0, 1F, 0.5F, 1F);
+			}
+			else
+			{
+				this.setBlockBounds(0, 0, 0, 1F, 1F, 1F);
+			}
+		}
+		else
+		{
+			this.setBlockBounds(0, 0, 0, 1F, 1F, 1F);
+		}
+	}
+
+	/**
+	 * Adds all intersecting collision boxes to a list. (Be sure to only add boxes to the list if they intersect the
+	 * mask.) Parameters: World, X, Y, Z, mask, list, colliding entity
+	 */
+	@Override
+	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB mask, List list, Entity entity)
+	{
+		this.setBlockBounds(0F, 0F, 0F, 1F, 0.5F, 1F);
+		super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te instanceof TileEntityStockPile)
+		{
+			TileEntityStockPile sp = (TileEntityStockPile) te;
+			int flags = sp.getInventoryItemFlags();
+
+			if (flags == 0)
+			{
+				return;
+			}
+
+			if ((flags & 1) != 0)
+			{
+				this.setBlockBounds(0F, 0.5F, 0F, 0.5F, 1.0F, 0.5F);
+				super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+			}
+
+			if ((flags & 2) != 0)
+			{
+				this.setBlockBounds(0.5F, 0.5F, 0F, 1.0F, 1.0F, 0.5F);
+				super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+			}
+
+			if ((flags & 4) != 0)
+			{
+				this.setBlockBounds(0F, 0.5F, 0.5F, 0.5F, 1.0F, 1.0F);
+				super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+			}
+
+			if ((flags & 8) != 0)
+			{
+				this.setBlockBounds(0.5F, 0.5F, 0.5F, 1.0F, 1.0F, 1.0F);
+				super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
+			}
+		}
+
+		this.setBlockBoundsBasedOnState(world, x, y, z);
 	}
 
 	@Override

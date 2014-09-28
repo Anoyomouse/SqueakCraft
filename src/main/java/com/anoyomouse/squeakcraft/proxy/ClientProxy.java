@@ -1,11 +1,14 @@
 package com.anoyomouse.squeakcraft.proxy;
 
 import com.anoyomouse.squeakcraft.client.renderer.item.ItemRendererStockPile;
+import com.anoyomouse.squeakcraft.client.renderer.item.ItemRendererTransportPipe;
 import com.anoyomouse.squeakcraft.client.renderer.tileentity.TileEntityRendererStockPile;
+import com.anoyomouse.squeakcraft.client.renderer.tileentity.TileEntityRendererTransportPipe;
 import com.anoyomouse.squeakcraft.client.settings.KeyBindings;
 import com.anoyomouse.squeakcraft.init.ModBlocks;
 import com.anoyomouse.squeakcraft.reference.RenderIds;
 import com.anoyomouse.squeakcraft.tileentity.TileEntityStockPile;
+import com.anoyomouse.squeakcraft.tileentity.TileEntityTransportPipe;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import net.minecraft.item.Item;
@@ -30,10 +33,13 @@ public class ClientProxy extends CommonProxy
 	public void initRenderingAndTextures()
 	{
 		RenderIds.stockpile = RenderingRegistry.getNextAvailableRenderId();
+		RenderIds.transportPipe = RenderingRegistry.getNextAvailableRenderId();
 
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.stockPile), new ItemRendererStockPile());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.transportPipe), new ItemRendererTransportPipe());
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityStockPile.class, new TileEntityRendererStockPile());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransportPipe.class, new TileEntityRendererTransportPipe());
 	}
 
 	@Override

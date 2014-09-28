@@ -1,27 +1,27 @@
 package com.anoyomouse.squeakcraft.client.renderer.item;
 
 import com.anoyomouse.squeakcraft.client.renderer.model.ModelStockPile;
+import com.anoyomouse.squeakcraft.client.renderer.model.ModelTransportPipe;
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.Textures;
-import com.anoyomouse.squeakcraft.utility.LogHelper;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import cpw.mods.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Anoyomouse on 2014/09/26.
  */
 @SideOnly(Side.CLIENT)
-public class ItemRendererStockPile implements IItemRenderer
+public class ItemRendererTransportPipe implements IItemRenderer
 {
-	private final ModelStockPile modelStockPile;
+	private final ModelTransportPipe modelTransportPipe;
 
-	public ItemRendererStockPile()
+	public ItemRendererTransportPipe()
 	{
-		modelStockPile = new ModelStockPile();
+		modelTransportPipe = new ModelTransportPipe();
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class ItemRendererStockPile implements IItemRenderer
 	private void RenderStockPile(float x, float y, float z, int metaData)
 	{
 		// Bind texture
-		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Textures.Model.STOCKPILE_BASE);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Textures.Model.TRANSPORT_PIPE);
 
 		GL11.glPushMatrix();
 
@@ -71,7 +71,7 @@ public class ItemRendererStockPile implements IItemRenderer
 		GL11.glTranslatef(x, y, z);
 
 		// Render
-		modelStockPile.renderPart(Names.ModelParts.STOCKPILE_BASE);
+		modelTransportPipe.renderPart(Names.ModelParts.TRANSPORT_PIPE_CORNER);
 
 		GL11.glPopMatrix();
 	}
