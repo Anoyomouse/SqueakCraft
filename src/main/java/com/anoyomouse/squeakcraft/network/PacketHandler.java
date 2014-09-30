@@ -2,6 +2,7 @@ package com.anoyomouse.squeakcraft.network;
 
 import com.anoyomouse.squeakcraft.network.message.MessageTileEntitySqueakCraft;
 import com.anoyomouse.squeakcraft.network.message.MessageTileEntityStockPile;
+import com.anoyomouse.squeakcraft.network.message.MessageTileEntityTransportPipe;
 import com.anoyomouse.squeakcraft.reference.Reference;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -15,5 +16,6 @@ public class PacketHandler
 	{
 		INSTANCE.registerMessage(MessageTileEntitySqueakCraft.class, MessageTileEntitySqueakCraft.class, 0, Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityStockPile.class, MessageTileEntityStockPile.class, 1, Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityTransportPipe.class, MessageTileEntityTransportPipe.class, 2, Side.CLIENT);
 	}
 }

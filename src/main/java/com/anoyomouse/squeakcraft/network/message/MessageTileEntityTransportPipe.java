@@ -1,46 +1,39 @@
 package com.anoyomouse.squeakcraft.network.message;
 
 import com.anoyomouse.squeakcraft.tileentity.TileEntitySqueakCraft;
-import com.anoyomouse.squeakcraft.tileentity.TileEntityStockPile;
+import com.anoyomouse.squeakcraft.tileentity.TileEntityTransportPipe;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 /**
  * Created by Anoyomouse on 2014/09/27.
  */
-public class MessageTileEntityStockPile implements IMessage, IMessageHandler<MessageTileEntityStockPile, IMessage>
+public class MessageTileEntityTransportPipe implements IMessage, IMessageHandler<MessageTileEntityTransportPipe, IMessage>
 {
 	public int x, y, z;
 	public byte orientation, state;
+	public byte connectedSides;
 	public String customName, owner;
-	public ItemStack[] inventorySlots;
 
-	public MessageTileEntityStockPile()
+	public MessageTileEntityTransportPipe()
 	{
-		this.inventorySlots = new ItemStack[4];
 	}
 
-	public MessageTileEntityStockPile(TileEntityStockPile tileEntityStockPile)
+	public MessageTileEntityTransportPipe(TileEntityTransportPipe tileEntityTransportPipe)
 	{
-		this.x = tileEntityStockPile.xCoord;
-		this.y = tileEntityStockPile.yCoord;
-		this.z = tileEntityStockPile.zCoord;
-		this.orientation = (byte) tileEntityStockPile.getOrientation().ordinal();
-		this.state = (byte) tileEntityStockPile.getState();
-		this.customName = tileEntityStockPile.getCustomName();
-		this.owner = tileEntityStockPile.getOwner();
+		this.x = tileEntityTransportPipe.xCoord;
+		this.y = tileEntityTransportPipe.yCoord;
+		this.z = tileEntityTransportPipe.zCoord;
+		this.orientation = (byte) tileEntityTransportPipe.getOrientation().ordinal();
+		this.state = (byte) tileEntityTransportPipe.getState();
+		this.customName = tileEntityTransportPipe.getCustomName();
+		this.owner = tileEntityTransportPipe.getOwner();
 
-		this.inventorySlots = new ItemStack[4];
-		for(int i = 0;i < 4; i++)
-		{
-			this.inventorySlots[i] = tileEntityStockPile.getStackInSlot(i);
-		}
+		this.connectedSides = tileEntityTransportPipe.getConnectedSidesByte();
 	}
 
 	@Override
@@ -56,11 +49,7 @@ public class MessageTileEntityStockPile implements IMessage, IMessageHandler<Mes
 		int ownerLength = buf.readInt();
 		this.owner = new String(buf.readBytes(ownerLength).array());
 
-		this.inventorySlots = new ItemStack[4];
-		for (int i = 0; i < 4; i++)
-		{
-			this.inventorySlots[i] = ByteBufUtils.readItemStack(buf);
-		}
+		this.connectedSides = buf.readByte();
 	}
 
 	@Override
@@ -76,28 +65,22 @@ public class MessageTileEntityStockPile implements IMessage, IMessageHandler<Mes
 		buf.writeInt(owner.length());
 		buf.writeBytes(owner.getBytes());
 
-		for (int i = 0; i < 4; i++)
-		{
-			ByteBufUtils.writeItemStack(buf, this.inventorySlots[i]);
-		}
+		buf.writeByte(connectedSides);
 	}
 
 	@Override
-	public IMessage onMessage(MessageTileEntityStockPile message, MessageContext ctx)
+	public IMessage onMessage(MessageTileEntityTransportPipe message, MessageContext ctx)
 	{
 		TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 
-		if (tileEntity instanceof TileEntityStockPile)
+		if (tileEntity instanceof TileEntityTransportPipe)
 		{
 			((TileEntitySqueakCraft) tileEntity).setOrientation(message.orientation);
 			((TileEntitySqueakCraft) tileEntity).setState(message.state);
 			((TileEntitySqueakCraft) tileEntity).setCustomName(message.customName);
 			((TileEntitySqueakCraft) tileEntity).setOwner(message.owner);
 
-			for(int i = 0; i < 4; i++)
-			{
-				((TileEntityStockPile) tileEntity).setInventorySlotContents(i, message.inventorySlots[i]);
-			}
+			((TileEntityTransportPipe) tileEntity).setConnectedSidesByte(message.connectedSides);
 		}
 
 		return null;
@@ -106,6 +89,6 @@ public class MessageTileEntityStockPile implements IMessage, IMessageHandler<Mes
 	@Override
 	public String toString()
 	{
-		return String.format("MessageTileEntityStockPile - x:%s, y:%s, z:%s, orientation:%s, state:%s, customName:%s, owner:%s, inventorySlots:%s", x, y, z, orientation, state, customName, owner, inventorySlots);
+		return String.format("MessageTileEntityTransportPipe - x:%s, y:%s, z:%s, orientation:%s, state:%s, customName:%s, owner:%s, connectedSides:%s", x, y, z, orientation, state, customName, owner, connectedSides);
 	}
 }

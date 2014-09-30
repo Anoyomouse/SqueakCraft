@@ -5,12 +5,15 @@ import com.anoyomouse.squeakcraft.reference.GUIs;
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.RenderIds;
 import com.anoyomouse.squeakcraft.tileentity.TileEntityStockPile;
+import com.anoyomouse.squeakcraft.tileentity.TileEntityTransportPipe;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -201,4 +204,5 @@ public class BlockStockPile extends BlockSqueakCraft implements ITileEntityProvi
 	{
 		list.add(new ItemStack(item, 1, 0));
 	}
+
 }

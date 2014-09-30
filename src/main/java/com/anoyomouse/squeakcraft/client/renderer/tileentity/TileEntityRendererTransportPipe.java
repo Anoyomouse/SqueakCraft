@@ -7,6 +7,7 @@ import com.anoyomouse.squeakcraft.tileentity.TileEntityTransportPipe;
 import com.anoyomouse.squeakcraft.utility.LogHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -30,25 +31,46 @@ public class TileEntityRendererTransportPipe extends TileEntitySpecialRenderer
 			GL11.glScalef(1.0F, 1.0F, 1.0F);
 			GL11.glTranslatef((float) x, (float) y, (float) z);
 
-			// Render
-			modelTransportPipe.renderPart(Names.ModelParts.TRANSPORT_PIPE_CORNER);
-
-			int edges = tileEntityTransportPipe.edgeDetect((int) x, (int) y, (int) z);
-			if (edges > 0)
+			if (tileEntityTransportPipe.isBiDirectional())
 			{
-				if ((edges & 1) != 0)
+				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.UP))
+					renderCornerPiece(Names.ModelParts.TRANSPORT_PIPE_LONG);
+				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.EAST))
+				{
+					GL11.glPushMatrix(); ////
+					GL11.glTranslatef(1.0F, 0F, 0);
+					GL11.glRotatef(90.0F, 0F, 0F, 1.0F);
+					modelTransportPipe.renderPart(Names.ModelParts.TRANSPORT_PIPE_LONG);
+					GL11.glPopMatrix();
+				}
+				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.NORTH))
+				{
+					GL11.glPushMatrix();
+					GL11.glTranslatef(0F, 1.0F, 0);
+					GL11.glRotatef(90.0F, 1.0F, 0F, 0F);
+					modelTransportPipe.renderPart(Names.ModelParts.TRANSPORT_PIPE_LONG);
+					GL11.glPopMatrix();
+				}
+			}
+			else
+			{
+				// Render
+				modelTransportPipe.renderPart(Names.ModelParts.TRANSPORT_PIPE_CORNER);
+
+				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.UP))
 					renderCornerPiece(Names.ModelParts.TRANSPORT_PIPE_CORNER1);
-				if ((edges & 2) != 0)
+				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.WEST))
 					renderCornerPiece(Names.ModelParts.TRANSPORT_PIPE_CORNER2);
-				if ((edges & 4) != 0)
+				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.SOUTH))
 					renderCornerPiece(Names.ModelParts.TRANSPORT_PIPE_CORNER3);
-				if ((edges & 8) != 0)
+				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.EAST))
 					renderCornerPiece(Names.ModelParts.TRANSPORT_PIPE_CORNER4);
-				if ((edges & 16) != 0)
+				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.NORTH))
 					renderCornerPiece(Names.ModelParts.TRANSPORT_PIPE_CORNER5);
-				if ((edges & 32) != 0)
+				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.DOWN))
 					renderCornerPiece(Names.ModelParts.TRANSPORT_PIPE_CORNER6);
 			}
+
 			GL11.glPopMatrix();
 		}
 	}

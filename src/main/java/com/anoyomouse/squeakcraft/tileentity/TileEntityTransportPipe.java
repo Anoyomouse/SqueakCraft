@@ -1,41 +1,30 @@
 package com.anoyomouse.squeakcraft.tileentity;
 
+import com.anoyomouse.squeakcraft.api.ITubeConnectable;
 import com.anoyomouse.squeakcraft.block.BlockTransportPipe;
-import com.anoyomouse.squeakcraft.init.ModBlocks;
-import com.anoyomouse.squeakcraft.inventory.ContainerStockPile;
 import com.anoyomouse.squeakcraft.network.PacketHandler;
-import com.anoyomouse.squeakcraft.network.message.MessageTileEntityStockPile;
-import com.anoyomouse.squeakcraft.reference.Names;
-import com.anoyomouse.squeakcraft.utility.LogHelper;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import com.anoyomouse.squeakcraft.network.message.MessageTileEntityTransportPipe;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by Anoyomouse on 2014/09/26.
  */
-public class TileEntityTransportPipe extends TileEntitySqueakCraft
+public class TileEntityTransportPipe extends TileEntitySqueakCraft implements ITubeConnectable
 {
 	/**
 	 * Server sync counter (once per 20 ticks)
 	 */
 	private int ticksSinceSync = -1;
 
-	// Items in the pipe
-	private ItemStack[] inventory;
-
-	private boolean hadStuff;
+	private boolean isConnectableOnSide[] = {true, true, true, true, true, true};
+	private boolean isConnectedOnSide[] = new boolean[6];
 
 	public TileEntityTransportPipe()
 	{
 		super();
-		inventory = new ItemStack[16];
 	}
 
 	@Override
@@ -43,71 +32,14 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft
 	{
 		super.readFromNBT(nbtTagCompound);
 
-		// Read in the ItemStacks in the inventory from NBT
-		NBTTagList tagList = nbtTagCompound.getTagList(Names.NBT.ITEMS, 10);
-		inventory = new ItemStack[16];
-		for (int i = 0; i < tagList.tagCount(); ++i)
+		this.setConnectedSidesByte(nbtTagCompound.getByte("CONNECTED_SIDES"));
+
+		if (worldObj != null && !worldObj.isRemote)
 		{
-			NBTTagCompound tagCompound = tagList.getCompoundTagAt(i);
-			byte slotIndex = tagCompound.getByte("Slot");
-			if (slotIndex >= 0 && slotIndex < inventory.length)
-			{
-				inventory[slotIndex] = ItemStack.loadItemStackFromNBT(tagCompound);
-			}
-		}
-
-		checkStacks();
-	}
-
-	// Borrowed from IronChests
-	@Override
-	public void markDirty()
-	{
-		super.markDirty();
-		checkStacks();
-	}
-
-	// Borrowed from IronChests
-	private void checkStacks()
-	{
-		if (worldObj == null || worldObj.isRemote)
-		{
-			return;
-		}
-
-		boolean hasStuff = false;
-		for (int i = 0; i < 16; i++)
-		{
-			if (inventory[i] != null)
-			{
-				hasStuff = true;
-				break;
-			}
-		}
-
-		LogHelper.info("StockPile (" + xCoord + "," + yCoord + "," + zCoord + ") - Has Stuff: " + hasStuff + " - Had Stuff: " + hadStuff);
-
-		// If we don't have stuff, but we had stuff, then we need to update the block
-		if (!hasStuff && hadStuff)
-		{
-			hadStuff = false;
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			LogHelper.info("StockPile (" + xCoord + "," + yCoord + "," + zCoord + ") has no stuff");
 		}
-		// If we have stuff, but we didn't have stuff, then we need to update the block
-		else if (hasStuff && !hadStuff)
-		{
-			hadStuff = true;
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			LogHelper.info("StockPile (" + xCoord + "," + yCoord + "," + zCoord + ") has stuff");
-		}
-	}
 
-	@Override
-	public Packet getDescriptionPacket()
-	{
-		checkStacks();
-		return super.getDescriptionPacket(); // PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityStockPile(this));
+		PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityTransportPipe(this), new NetworkRegistry.TargetPoint(worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 20));
 	}
 
 	@Override
@@ -115,65 +47,112 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft
 	{
 		super.writeToNBT(nbtTagCompound);
 
-		// Write the ItemStacks in the inventory to NBT
-		NBTTagList tagList = new NBTTagList();
-		for (int currentIndex = 0; currentIndex < inventory.length; ++currentIndex)
-		{
-			if (inventory[currentIndex] != null)
-			{
-				NBTTagCompound tagCompound = new NBTTagCompound();
-				tagCompound.setByte("Slot", (byte) currentIndex);
-				inventory[currentIndex].writeToNBT(tagCompound);
-				tagList.appendTag(tagCompound);
-			}
-		}
-		nbtTagCompound.setTag(Names.NBT.ITEMS, tagList);
+		nbtTagCompound.setByte("CONNECTED_SIDES", getConnectedSidesByte());
 	}
 
-	public int edgeDetect(int x, int y, int z)
+	public byte getConnectedSidesByte()
 	{
-		int edges = 0;
-
-		TileEntity te = worldObj.getTileEntity(x, y + 1, z);
-		if (te != null) LogHelper.info("Block (x, y + 1, z) - (" + x + ", " + (y + 1) + ", " + z + "): " + te.toString());
-		if (te != null && te instanceof TileEntityTransportPipe)
+		byte sides = 0;
+		for (int i = 0; i < 6; i++)
 		{
-			edges |= 1 << 0;
+			if (isConnectedOnSide[i]) sides |= (1 << i);
 		}
 
-		te = worldObj.getTileEntity(x, y, z - 1);
-		if (te != null) LogHelper.info("Block (x, y, z - 1) - (" + x + ", " + y + ", " + (z - 1) + "): " + te.toString());
-		if (te != null && te instanceof TileEntityTransportPipe)
+		// LogHelper.info("Pipe connected on: " + Integer.toHexString(sides));
+		return sides;
+	}
+
+	public void setConnectedSidesByte(byte sides)
+	{
+		// Read in the ItemStacks in the inventory from NBT
+		for (int i = 0; i < 6; i++)
 		{
-			edges |= 1 << 4;
+			if ((sides & (1 << i)) != 0)
+			{
+				isConnectedOnSide[i] = true;
+			}
+		}
+	}
+
+	// Borrowed from IronChests
+	@Override
+	public void markDirty()
+	{
+		super.markDirty();
+	}
+
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityTransportPipe(this));
+	}
+
+	@Override
+	public boolean AcceptsItemsOnSide(ForgeDirection side)
+	{
+		return isConnectedOnSide[side.ordinal()];
+	}
+
+	@Override
+	public boolean IsConnectedOnSide(ForgeDirection side)
+	{
+		return isConnectedOnSide[side.ordinal()];
+	}
+
+	@Override
+	public Boolean CanRoute()
+	{
+		return true;
+	}
+
+	@Override
+	public void SetConnectionOnSide(ForgeDirection side, boolean connected)
+	{
+		isConnectedOnSide[side.ordinal()] = connected;
+	}
+
+	@Override
+	public boolean IsConnectableOnSide(ForgeDirection side)
+	{
+		return isConnectableOnSide[side.ordinal()];
+	}
+
+	@Override
+	public boolean canUpdate()
+	{
+		return true;
+	}
+
+	public boolean isBiDirectional()
+	{
+		int connectedCount = 0;
+		ForgeDirection lastDir = null;
+		boolean biDirectional = false;
+		for (int i = 0; i < 6; i++)
+		{
+			if (isConnectedOnSide[i])
+			{
+				connectedCount ++;
+				if (connectedCount == 1)
+					lastDir = ForgeDirection.getOrientation(i);
+				if (connectedCount == 2)
+				{
+					biDirectional = (lastDir.getOpposite().ordinal() == i);
+				}
+				else
+					biDirectional = false;
+			}
 		}
 
-		te = worldObj.getTileEntity(x, y, z + 1);
-		if (te != null) LogHelper.info("Block (x, y, z + 1) - (" + x + ", " + y + ", " + (z + 1) + "): " + te.toString());
-		if (te != null && te instanceof TileEntityTransportPipe)
-		{
-			edges |= 1 << 2;
-		}
+		return biDirectional;
+	}
 
-		te = worldObj.getTileEntity(x - 1, y, z);
-		if (te != null && te instanceof TileEntityTransportPipe)
+	public void checkForAdjacentBlocks()
+	{
+		if (worldObj != null)
 		{
-			edges |= 1 << 1;
+			BlockTransportPipe.CheckTubeConnections(worldObj, xCoord, yCoord, zCoord);
 		}
-
-		te = worldObj.getTileEntity(x + 1, y, z);
-		if (te != null && te instanceof TileEntityTransportPipe)
-		{
-			edges |= 1 << 3;
-		}
-
-		te = worldObj.getTileEntity(x, y - 1, z);
-		if (te != null && te instanceof TileEntityTransportPipe)
-		{
-			edges |= 1 << 5;
-		}
-
-		return edges;
 	}
 
 	/**
@@ -184,6 +163,7 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft
 	public void updateEntity()
 	{
 		super.updateEntity();
+		this.checkForAdjacentBlocks();
 
 		if (worldObj == null)
 		{
@@ -192,7 +172,7 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft
 
 		if (!worldObj.isRemote && ticksSinceSync < 0)
 		{
-			worldObj.addBlockEvent(xCoord, yCoord, zCoord, ModBlocks.stockPile, 1, 0);
+			this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), 1, this.getConnectedSidesByte());
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			this.markDirty();
 		}
@@ -200,8 +180,11 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft
 		this.ticksSinceSync++;
 		if (ticksSinceSync % (20 * 4) == 0)
 		{
-			worldObj.addBlockEvent(xCoord, yCoord, zCoord, ModBlocks.stockPile, 1, 0);
+			this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), 1, this.getConnectedSidesByte());
 		}
+
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityTransportPipe(this), new NetworkRegistry.TargetPoint(worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 20));
 	}
 
 	/**
@@ -212,9 +195,24 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft
 	{
 		if (eventID == 1)
 		{
+			this.setConnectedSidesByte((byte)eventData);
 			return true;
 		}
 
 		return super.receiveClientEvent(eventID, eventData);
+	}
+
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		this.updateContainingBlockInfo();
+		this.checkForAdjacentBlocks();
+	}
+
+	@Override
+	public void updateContainingBlockInfo()
+	{
+		super.updateContainingBlockInfo();
 	}
 }
