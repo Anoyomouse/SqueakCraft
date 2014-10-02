@@ -4,6 +4,7 @@ import com.anoyomouse.squeakcraft.api.ITubeConnectable;
 import com.anoyomouse.squeakcraft.block.BlockTransportPipe;
 import com.anoyomouse.squeakcraft.network.PacketHandler;
 import com.anoyomouse.squeakcraft.network.message.MessageTileEntityTransportPipe;
+import com.anoyomouse.squeakcraft.reference.Names;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -32,7 +33,7 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 	{
 		super.readFromNBT(nbtTagCompound);
 
-		this.setConnectedSidesByte(nbtTagCompound.getByte("CONNECTED_SIDES"));
+		this.setConnectedSidesByte(nbtTagCompound.getByte(Names.NBT.CONNECTED_SIDES));
 
 		if (worldObj != null && !worldObj.isRemote)
 		{
@@ -47,9 +48,10 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 	{
 		super.writeToNBT(nbtTagCompound);
 
-		nbtTagCompound.setByte("CONNECTED_SIDES", getConnectedSidesByte());
+		nbtTagCompound.setByte(Names.NBT.CONNECTED_SIDES, getConnectedSidesByte());
 	}
 
+	/* ** CALLED FROM PACKETHELPER ** */
 	public byte getConnectedSidesByte()
 	{
 		byte sides = 0;
@@ -58,7 +60,6 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 			if (isConnectedOnSide[i]) sides |= (1 << i);
 		}
 
-		// LogHelper.info("Pipe connected on: " + Integer.toHexString(sides));
 		return sides;
 	}
 
@@ -72,13 +73,6 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 				isConnectedOnSide[i] = true;
 			}
 		}
-	}
-
-	// Borrowed from IronChests
-	@Override
-	public void markDirty()
-	{
-		super.markDirty();
 	}
 
 	@Override
