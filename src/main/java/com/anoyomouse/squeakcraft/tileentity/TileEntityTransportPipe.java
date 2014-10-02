@@ -10,10 +10,16 @@ import com.anoyomouse.squeakcraft.block.BlockTransportPipe;
 import com.anoyomouse.squeakcraft.network.PacketHandler;
 import com.anoyomouse.squeakcraft.network.message.MessageTileEntityTransportPipe;
 import com.anoyomouse.squeakcraft.reference.Names;
+import com.anoyomouse.squeakcraft.transport.TransportCrate;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.ForgeDirection;
+import sun.plugin2.message.transport.Transport;
+
+import java.util.ArrayList;
 
 /**
  * Created by Anoyomouse on 2014/09/26.
@@ -27,6 +33,7 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 
 	private boolean isConnectableOnSide[] = {true, true, true, true, true, true};
 	private boolean isConnectedOnSide[] = new boolean[6];
+	private ArrayList<TransportCrate> crates = new ArrayList<TransportCrate>();
 
 	public TileEntityTransportPipe()
 	{
@@ -39,6 +46,19 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 		super.readFromNBT(nbtTagCompound);
 
 		this.setConnectedSidesByte(nbtTagCompound.getByte(Names.NBT.CONNECTED_SIDES));
+
+		int numberOfCrates = nbtTagCompound.getInteger(Names.NBT.TRANSPORT_PIPE_CRATE_COUNT);
+
+		NBTTagList contents = nbtTagCompound.getTagList(Names.NBT.TRANSPORT_PIPE_ITEMS, numberOfCrates);
+		if (this.crates == null ) { this.crates = new ArrayList<TransportCrate>(); }
+		else { this.crates.clear(); }
+
+		for (int i = 0; i < contents.tagCount(); i++)
+		{
+			NBTTagCompound tagCompound = contents.getCompoundTagAt(i);
+
+			this.crates.add(TransportCrate.loadTransportCrateFromNBTTag(tagCompound));
+		}
 
 		if (worldObj != null && !worldObj.isRemote)
 		{
@@ -54,9 +74,17 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 		super.writeToNBT(nbtTagCompound);
 
 		nbtTagCompound.setByte(Names.NBT.CONNECTED_SIDES, getConnectedSidesByte());
+
+		NBTTagList contents = new NBTTagList();
+		for (TransportCrate transportCrates : crates)
+		{
+			contents.appendTag(transportCrates.getNBTTagData());
+		}
+
+		nbtTagCompound.setTag(Names.NBT.TRANSPORT_PIPE_ITEMS, contents);
 	}
 
-	/* ** CALLED FROM PACKETHELPER ** */
+	/* ** CALLED FROM PacketHelper ** */
 	public byte getConnectedSidesByte()
 	{
 		byte sides = 0;

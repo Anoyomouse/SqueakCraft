@@ -17,6 +17,11 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class MessageTileEntitySqueakCraft extends MessageTileEntitySqueakBase implements IMessageHandler<MessageTileEntitySqueakCraft, IMessage>
 {
+	public MessageTileEntitySqueakCraft()
+	{
+		super();
+	}
+
 	public MessageTileEntitySqueakCraft(TileEntitySqueakCraft tileEntitySqueakCraft)
 	{
 		super(tileEntitySqueakCraft);

@@ -5,14 +5,16 @@
  **/
 package com.anoyomouse.squeakcraft.network.message;
 
-import com.anoyomouse.squeakcraft.tileentity.TileEntitySqueakCraft;
 import com.anoyomouse.squeakcraft.tileentity.TileEntityTransportPipe;
-import cpw.mods.fml.client.FMLClientHandler;
+import com.anoyomouse.squeakcraft.transport.TransportCrate;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import sun.plugin2.message.transport.Transport;
+
+import java.util.ArrayList;
 
 /**
  * Created by Anoyomouse on 2014/09/27.
@@ -20,6 +22,13 @@ import net.minecraft.tileentity.TileEntity;
 public class MessageTileEntityTransportPipe extends MessageTileEntitySqueakBase implements IMessageHandler<MessageTileEntityTransportPipe, IMessage>
 {
 	public byte connectedSides;
+	public ArrayList<TransportCrate> contents;
+
+	public MessageTileEntityTransportPipe()
+	{
+		super();
+		connectedSides = 0;
+	}
 
 	public MessageTileEntityTransportPipe(TileEntityTransportPipe tileEntityTransportPipe)
 	{
@@ -32,13 +41,26 @@ public class MessageTileEntityTransportPipe extends MessageTileEntitySqueakBase 
 	{
 		super.fromBytes(buf);
 		this.connectedSides = buf.readByte();
+		if (this.contents == null) this.contents = new ArrayList<TransportCrate>();
+		else this.contents.clear();
+
+		int numItems = buf.readInt();
+		for(int i = 0; i < numItems; i++)
+		{
+			this.contents.add(TransportCrate.readByteBufData(buf));
+		}
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
 		super.toBytes(buf);
-		buf.writeByte(connectedSides);
+		buf.writeByte(this.connectedSides);
+		buf.writeInt(this.contents.size());
+		for (TransportCrate crate : this.contents)
+		{
+			crate.writeByteBufData(buf);
+		}
 	}
 
 	@Override

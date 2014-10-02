@@ -21,10 +21,14 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class MessageTileEntityStockPile extends MessageTileEntitySqueakBase implements IMessageHandler<MessageTileEntityStockPile, IMessage>
 {
-	public int x, y, z;
-	public byte orientation, state;
-	public String customName, owner;
 	public ItemStack[] inventorySlots;
+
+	public MessageTileEntityStockPile()
+	{
+		super();
+
+		inventorySlots = new ItemStack[4];
+	}
 
 	public MessageTileEntityStockPile(TileEntityStockPile tileEntityStockPile)
 	{

@@ -22,6 +22,13 @@ public abstract class MessageTileEntitySqueakBase implements IMessage
 	public byte orientation, state;
 	public String customName, owner;
 
+	protected MessageTileEntitySqueakBase()
+	{
+		x = y = z = 0;
+		orientation = 0; state = 0;
+		customName = ""; owner = "";
+	}
+
 	protected MessageTileEntitySqueakBase(TileEntitySqueakCraft tileEntitySqueakCraft)
 	{
 		this.x = tileEntitySqueakCraft.xCoord;

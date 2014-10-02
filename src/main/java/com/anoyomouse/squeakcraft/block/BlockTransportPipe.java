@@ -118,6 +118,19 @@ public class BlockTransportPipe extends BlockSqueakCraft implements ITileEntityP
 	}
 
 	@Override
+	public void onNeighborChange(IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ)
+	{
+		super.onNeighborChange(world, x, y, z, tileX, tileY, tileZ);
+
+		CheckTubeConnections((World)world, x, y, z);
+		TileEntityTransportPipe tileEntityTransportPipe = (TileEntityTransportPipe) world.getTileEntity(x, y, z);
+		if (tileEntityTransportPipe != null)
+		{
+			tileEntityTransportPipe.updateContainingBlockInfo();
+		}
+	}
+
+	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
 	{
 		TileEntityTransportPipe tileEntityTransportPipe = (TileEntityTransportPipe)world.getTileEntity(x, y, z);
@@ -128,6 +141,18 @@ public class BlockTransportPipe extends BlockSqueakCraft implements ITileEntityP
 		}
 
 		super.breakBlock(world, x, y, z, block, metadata);
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te instanceof TileEntityTransportPipe)
+		{
+
+		}
+
+		return super.onBlockActivated(world, x, y, z, entityPlayer, p_149727_6_, p_149727_7_, p_149727_8_, p_149727_9_);
 	}
 
 	public static void CheckTubeConnections(World world, int x, int y, int z)

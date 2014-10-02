@@ -32,6 +32,13 @@ public final class Names
 		public static final String OWNER_UUID_MOST_SIG = "ownerUUIDMostSig";
 		public static final String OWNER_UUID_LEAST_SIG = "ownerUUIDLeastSig";
 		public static final String CONNECTED_SIDES = "CONNECTED_SIDES";
+
+		public static final String CRATE_HEADING = "HEADING";
+		public static final String CRATE_PROGRESS = "PROGRESS";
+		public static final String CRATE_CONTENTS = "ITEM";
+
+		public static final String TRANSPORT_PIPE_ITEMS = "ITEMS";
+		public static final String TRANSPORT_PIPE_CRATE_COUNT = "ITEM_COUNT";
 	}
 
 	public static final class Containers
