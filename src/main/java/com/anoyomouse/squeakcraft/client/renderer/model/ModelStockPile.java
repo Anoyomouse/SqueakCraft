@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) David-John Miller AKA Anoyomouse 2014
+ *
+ * See LICENCE in the project directory for licence information
+ **/
 package com.anoyomouse.squeakcraft.client.renderer.model;
 
 import cpw.mods.fml.relauncher.Side;

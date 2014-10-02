@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) David-John Miller AKA Anoyomouse 2014
+ *
+ * See LICENCE in the project directory for licence information
+ **/
 package com.anoyomouse.squeakcraft.client.gui.inventory;
 
 import com.anoyomouse.squeakcraft.utility.ResourceLocationHelper;
