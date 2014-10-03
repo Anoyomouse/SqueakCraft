@@ -56,10 +56,17 @@ public class MessageTileEntityTransportPipe extends MessageTileEntitySqueakBase 
 	{
 		super.toBytes(buf);
 		buf.writeByte(this.connectedSides);
-		buf.writeInt(this.contents.size());
-		for (TransportCrate crate : this.contents)
+		if (this.contents != null )
 		{
-			crate.writeByteBufData(buf);
+			buf.writeInt(this.contents.size());
+			for (TransportCrate crate : this.contents)
+			{
+				crate.writeByteBufData(buf);
+			}
+		}
+		else
+		{
+			buf.writeInt(0);
 		}
 	}
 
