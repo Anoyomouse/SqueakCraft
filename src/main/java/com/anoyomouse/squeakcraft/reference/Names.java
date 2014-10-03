@@ -57,7 +57,10 @@ public final class Names
 	public static final class ModelParts
 	{
 		public static final String STOCKPILE_BASE = "StockpileBase";
-		public static final String STOCKPILE_CRATE = "StockpileChest";
+		public static final String STOCKPILE_CRATE1 = "StockCrate1";
+		public static final String STOCKPILE_CRATE2 = "StockCrate2";
+		public static final String STOCKPILE_CRATE3 = "StockCrate3";
+		public static final String STOCKPILE_CRATE4 = "StockCrate4";
 
 		public static final String TRANSPORT_PIPE_LONG = "PipeLong";
 		public static final String TRANSPORT_PIPE_CORNER = "PipeCorner";
@@ -67,6 +70,20 @@ public final class Names
 		public static final String TRANSPORT_PIPE_CORNER4 = "Corner4";
 		public static final String TRANSPORT_PIPE_CORNER5 = "Corner5";
 		public static final String TRANSPORT_PIPE_CORNER6 = "Corner6";
+
+		public static final String CRATEPILE_CRATE1 = "PileCrate1";
+		public static final String CRATEPILE_CRATE2 = "PileCrate2";
+		public static final String CRATEPILE_CRATE3 = "PileCrate3";
+		public static final String CRATEPILE_CRATE4 = "PileCrate4";
+		public static final String CRATEPILE_CRATE5 = "PileCrate5";
+		public static final String CRATEPILE_CRATE6 = "PileCrate6";
+		public static final String CRATEPILE_CRATE7 = "PileCrate7";
+		public static final String CRATEPILE_CRATE8 = "PileCrate8";
+
+		public static final String INTERFACE = "Interface";
+		public static final String INTERFACE_PIPE = "InterfacePipe";
+
+		public static final String CRATE = "Crate";
 	}
 
 	public static final class Blocks

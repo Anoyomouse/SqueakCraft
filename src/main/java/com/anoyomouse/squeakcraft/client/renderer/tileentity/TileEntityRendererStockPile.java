@@ -32,6 +32,9 @@ public class TileEntityRendererStockPile extends TileEntitySpecialRenderer
 			GL11.glPushMatrix();
 			// Scale, Translate, Rotate
 			GL11.glScalef(1.0F, 1.0F, 1.0F);
+
+			// Origin is at the center of the model
+			GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 			GL11.glTranslatef((float) x,(float) y,(float) z);
 
 			// Render
@@ -42,19 +45,17 @@ public class TileEntityRendererStockPile extends TileEntitySpecialRenderer
 				if (tileEntityStockPile.getStackInSlot(i) != null)
 				{
 					GL11.glPushMatrix();
-					if (i == 0)
-						GL11.glTranslatef(0F, 0.5F, 0F);
-					if (i == 1)
-						GL11.glTranslatef(0.5F, 0.5F, 0F);
-					if (i == 2)
-						GL11.glTranslatef(0F, 0.5F, 0.5F);
-					if (i == 3)
-						GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-
 					this.bindTexture(Textures.Model.STOCKPILE_CRATE);
+					if (i == 0)
+						modelStockPile.renderPart(Names.ModelParts.STOCKPILE_CRATE1);
+					if (i == 1)
+						modelStockPile.renderPart(Names.ModelParts.STOCKPILE_CRATE2);
+					if (i == 2)
+						modelStockPile.renderPart(Names.ModelParts.STOCKPILE_CRATE3);
+					if (i == 3)
+						modelStockPile.renderPart(Names.ModelParts.STOCKPILE_CRATE4);
 
 					// Render
-					modelStockPile.renderPart(Names.ModelParts.STOCKPILE_CRATE);
 
 					GL11.glPopMatrix();
 				}

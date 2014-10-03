@@ -12,4 +12,7 @@ public final class RenderIds
 {
 	public static int stockpile;
 	public static int transportPipe;
+	public static int networkInterface;
+	public static int cratePile;
+	public static int crate;
 }

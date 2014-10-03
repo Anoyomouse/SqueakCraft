@@ -73,6 +73,7 @@ public class ItemRendererTransportPipe implements IItemRenderer
 
 		// Scale, Translate, Rotate
 		GL11.glScalef(1, 1, 1);
+		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 		GL11.glTranslatef(x, y, z);
 
 		// Render
