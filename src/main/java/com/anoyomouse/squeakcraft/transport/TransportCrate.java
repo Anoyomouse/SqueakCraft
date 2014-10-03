@@ -5,11 +5,9 @@
  */
 package com.anoyomouse.squeakcraft.transport;
 
-import com.anoyomouse.squeakcraft.init.ModBlocks;
 import com.anoyomouse.squeakcraft.reference.Names;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -86,5 +84,17 @@ public class TransportCrate
 		ItemStack item = ByteBufUtils.readItemStack(data);
 
 		return new TransportCrate(item, heading, progress);
+	}
+
+	public void addProgress(int addProgress)
+	{
+		if (this.progressPercent < 50 && this.progressPercent + addProgress >= 50)
+		{
+			this.progressPercent = 50;
+		}
+		else
+		{
+			this.progressPercent += addProgress;
+		}
 	}
 }

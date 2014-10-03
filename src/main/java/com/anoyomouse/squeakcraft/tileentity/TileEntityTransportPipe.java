@@ -5,6 +5,7 @@
  **/
 package com.anoyomouse.squeakcraft.tileentity;
 
+import com.anoyomouse.squeakcraft.SqueakCraftMod;
 import com.anoyomouse.squeakcraft.api.ITubeConnectable;
 import com.anoyomouse.squeakcraft.block.BlockTransportPipe;
 import com.anoyomouse.squeakcraft.network.PacketHandler;
@@ -33,6 +34,7 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 
 	private boolean isConnectableOnSide[] = {true, true, true, true, true, true};
 	private boolean isConnectedOnSide[] = new boolean[6];
+	private byte connectedSides = 0;
 	private ArrayList<TransportCrate> crates = new ArrayList<TransportCrate>();
 
 	public TileEntityTransportPipe()
@@ -65,7 +67,7 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}
 
-		PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityTransportPipe(this), new NetworkRegistry.TargetPoint(worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 20));
+		// PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityTransportPipe(this), new NetworkRegistry.TargetPoint(worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 20));
 	}
 
 	@Override
@@ -99,11 +101,13 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 	public void setConnectedSidesByte(byte sides)
 	{
 		// Read in the ItemStacks in the inventory from NBT
+		this.connectedSides = 0;
 		for (int i = 0; i < 6; i++)
 		{
 			if ((sides & (1 << i)) != 0)
 			{
 				isConnectedOnSide[i] = true;
+				this.connectedSides++;
 			}
 		}
 	}
@@ -135,7 +139,15 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 	@Override
 	public void SetConnectionOnSide(ForgeDirection side, boolean connected)
 	{
-		isConnectedOnSide[side.ordinal()] = connected;
+		int sideInt = side.ordinal();
+		if (isConnectedOnSide[sideInt] != connected)
+		{
+			isConnectedOnSide[sideInt] = connected;
+			if (connected)
+				connectedSides ++;
+			else
+				connectedSides --;
+		}
 	}
 
 	@Override
@@ -150,9 +162,14 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 		return true;
 	}
 
+	public ArrayList<TransportCrate> getContents()
+	{
+		return this.crates;
+	}
+
 	public boolean isBiDirectional()
 	{
-		int connectedCount = 0;
+		byte connectedCount = 0;
 		ForgeDirection lastDir = null;
 		boolean biDirectional = false;
 		for (int i = 0; i < 6; i++)
@@ -170,6 +187,7 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 					biDirectional = false;
 			}
 		}
+		this.connectedSides = connectedCount;
 
 		return biDirectional;
 	}
@@ -210,8 +228,67 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 			this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), 1, this.getConnectedSidesByte());
 		}
 
+
+			if (this.crates != null || this.crates.size() > 0)
+			{
+				ArrayList<TransportCrate> markForRemoval = new ArrayList<TransportCrate>();
+				for (TransportCrate crate : this.crates)
+				{
+					crate.addProgress(2);
+
+					if (crate.getProgress() == 50)
+					{
+						if (this.connectedSides == 1)
+						{
+							for (int i = 0; i < 6; i++)
+							{
+								if (this.isConnectedOnSide[i])
+								{
+									crate.setHeading(ForgeDirection.getOrientation(i));
+									break;
+								}
+							}
+						}
+						else if (this.connectedSides == 0)
+						{
+							// Eject!
+							markForRemoval.add(crate);
+						}
+						else
+						{
+							int heading = SqueakCraftMod.instance.random.nextInt(this.connectedSides);
+							int count = 0;
+							for (int i = 0; i < 6; i++)
+							{
+								if (this.isConnectedOnSide[i]) count++;
+								if (count == heading)
+								{
+									crate.setHeading(ForgeDirection.getOrientation(i));
+									break;
+								}
+							}
+						}
+					}
+					else if (crate.getProgress() >= 100)
+					{
+						markForRemoval.add(crate);
+					}
+				}
+
+				for (TransportCrate crate : markForRemoval)
+				{
+					this.ejectTransportCrate(crate);
+				}
+			}
+
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityTransportPipe(this), new NetworkRegistry.TargetPoint(worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 20));
+		// PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityTransportPipe(this), new NetworkRegistry.TargetPoint(worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 20));
+	}
+
+	private void ejectTransportCrate(TransportCrate crate)
+	{
+		this.crates.remove(crate);
+		// Eject contents here!
 	}
 
 	/**

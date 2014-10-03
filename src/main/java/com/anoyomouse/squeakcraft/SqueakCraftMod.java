@@ -29,6 +29,8 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
+import java.util.Random;
+
 @Mod(modid = Reference.MODID, version = Reference.VERSION, name = Reference.NAME, guiFactory = Reference.GUI_FACTORY)
 public class SqueakCraftMod
 {
@@ -37,6 +39,8 @@ public class SqueakCraftMod
 
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.SERVER_PROXY)
 	public static IProxy proxy;
+
+	public Random random = new Random();
 
 	// This is my logger!
 	private Logger modLogger;

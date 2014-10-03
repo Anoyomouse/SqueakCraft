@@ -10,6 +10,8 @@ import com.anoyomouse.squeakcraft.client.renderer.model.ModelTransportPipe;
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.Textures;
 import com.anoyomouse.squeakcraft.tileentity.TileEntityTransportPipe;
+import com.anoyomouse.squeakcraft.transport.TransportCrate;
+import com.anoyomouse.squeakcraft.utility.LogHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -24,27 +26,11 @@ public class TileEntityRendererTransportPipe extends TileEntitySpecialRenderer
 	private final ModelCrate modelCrate = new ModelCrate();
 
 	private int position = 0;
-	private int ticker = 0;
 	private float posFloat;
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float tick)
 	{
-		ticker ++;
-		if (ticker > 100)
-		{
-			ticker = 0;
-
-			position += 1;
-			if (position > 100)
-			{
-				position = 0;
-			}
-		}
-
-		posFloat = (float)position / 100.0F;
-		byte direction = 0;
-
 		if (tileEntity instanceof TileEntityTransportPipe)
 		{
 			TileEntityTransportPipe tileEntityTransportPipe = (TileEntityTransportPipe) tileEntity;
@@ -61,9 +47,32 @@ public class TileEntityRendererTransportPipe extends TileEntitySpecialRenderer
 					GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 					renderPipePiece(Names.ModelParts.TRANSPORT_PIPE_LONG);
 
-					GL11.glTranslatef(0.0F, direction == 1 ? 1.0F - posFloat : posFloat, 0.0F);
-					this.bindTexture(Textures.Model.CRATE);
-					modelCrate.renderPart(Names.ModelParts.CRATE);
+					for (TransportCrate crate : tileEntityTransportPipe.getContents())
+					{
+						GL11.glPushMatrix();
+
+						posFloat = this.getProgressFloat(crate.getProgress());
+						if (crate.getHeading() == ForgeDirection.UP)
+						{
+							GL11.glTranslatef(0.0F, -posFloat, 0.0F);
+						}
+						else if (crate.getHeading() == ForgeDirection.DOWN)
+						{
+							GL11.glTranslatef(0.0F, posFloat, 0.0F);
+						}
+						this.bindTexture(Textures.Model.CRATE);
+						modelCrate.renderPart(Names.ModelParts.CRATE);
+						GL11.glPopMatrix();
+					}
+
+					if (tileEntityTransportPipe.getContents().size() == 0)
+					{
+						GL11.glPushMatrix();
+
+						this.bindTexture(Textures.Model.CRATE);
+						modelCrate.renderPart(Names.ModelParts.CRATE);
+						GL11.glPopMatrix();
+					}
 				}
 				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.EAST))
 				{
@@ -76,9 +85,32 @@ public class TileEntityRendererTransportPipe extends TileEntitySpecialRenderer
 					GL11.glPopMatrix();
 
 					GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-					GL11.glTranslatef(direction == 1 ? 1.0F - posFloat : posFloat, 0.0F, 0.0F);
-					this.bindTexture(Textures.Model.CRATE);
-					modelCrate.renderPart(Names.ModelParts.CRATE);
+
+					for (TransportCrate crate : tileEntityTransportPipe.getContents())
+					{
+						GL11.glPushMatrix();
+						posFloat = this.getProgressFloat(crate.getProgress());
+						if (crate.getHeading() == ForgeDirection.EAST)
+						{
+							GL11.glTranslatef(-posFloat, 0.0F, 0.0F);
+						}
+						else if (crate.getHeading() == ForgeDirection.WEST)
+						{
+							GL11.glTranslatef(posFloat, 0.0F, 0.0F);
+						}
+						this.bindTexture(Textures.Model.CRATE);
+						modelCrate.renderPart(Names.ModelParts.CRATE);
+						GL11.glPopMatrix();
+					}
+
+					if (tileEntityTransportPipe.getContents().size() == 0)
+					{
+						GL11.glPushMatrix();
+						this.bindTexture(Textures.Model.CRATE);
+
+						modelCrate.renderPart(Names.ModelParts.CRATE);
+						GL11.glPopMatrix();
+					}
 				}
 				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.NORTH))
 				{
@@ -91,10 +123,31 @@ public class TileEntityRendererTransportPipe extends TileEntitySpecialRenderer
 					GL11.glPopMatrix();
 
 					GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-					GL11.glTranslatef(0.0F, 0.0F, direction == 1 ? 1.0F - posFloat : posFloat);
-					this.bindTexture(Textures.Model.CRATE);
-					modelCrate.renderPart(Names.ModelParts.CRATE);
 
+					for (TransportCrate crate : tileEntityTransportPipe.getContents())
+					{
+						GL11.glPushMatrix();
+						posFloat = this.getProgressFloat(crate.getProgress());
+						if (crate.getHeading() == ForgeDirection.NORTH)
+						{
+							GL11.glTranslatef(0.0F, 0.0F, -posFloat);
+						}
+						else if (crate.getHeading() == ForgeDirection.SOUTH)
+						{
+							GL11.glTranslatef(0.0F, 0.0F, posFloat);
+						}
+						this.bindTexture(Textures.Model.CRATE);
+						modelCrate.renderPart(Names.ModelParts.CRATE);
+						GL11.glPopMatrix();
+					}
+
+					if (tileEntityTransportPipe.getContents().size() == 0)
+					{
+						GL11.glPushMatrix();
+						this.bindTexture(Textures.Model.CRATE);
+						modelCrate.renderPart(Names.ModelParts.CRATE);
+						GL11.glPopMatrix();
+					}
 				}
 			}
 			else
@@ -115,10 +168,48 @@ public class TileEntityRendererTransportPipe extends TileEntitySpecialRenderer
 					renderPipePiece(Names.ModelParts.TRANSPORT_PIPE_CORNER5);
 				if (tileEntityTransportPipe.IsConnectedOnSide(ForgeDirection.DOWN))
 					renderPipePiece(Names.ModelParts.TRANSPORT_PIPE_CORNER6);
+
+				for (TransportCrate crate : tileEntityTransportPipe.getContents())
+				{
+					GL11.glPushMatrix();
+					posFloat = this.getProgressFloat(crate.getProgress());
+					if (crate.getHeading() == ForgeDirection.UP)
+						GL11.glTranslatef(0.0F, posFloat, 0.0F);
+					else if (crate.getHeading() == ForgeDirection.DOWN)
+						GL11.glTranslatef(0.0F, -posFloat, 0.0F);
+					else if (crate.getHeading() == ForgeDirection.EAST)
+						GL11.glTranslatef(posFloat, 0.0F, 0.0F);
+					else if (crate.getHeading() == ForgeDirection.WEST)
+						GL11.glTranslatef(-posFloat, 0.0F, 0.0F);
+					else if (crate.getHeading() == ForgeDirection.NORTH)
+						GL11.glTranslatef(0.0F, 0.0F, -posFloat);
+					else if (crate.getHeading() == ForgeDirection.SOUTH)
+						GL11.glTranslatef(0.0F, 0.0F, posFloat);
+
+					this.bindTexture(Textures.Model.CRATE);
+					modelCrate.renderPart(Names.ModelParts.CRATE);
+					GL11.glPopMatrix();
+				}
+
+				if (tileEntityTransportPipe.getContents().size() == 0)
+				{
+					GL11.glPushMatrix();
+					this.bindTexture(Textures.Model.CRATE);
+					modelCrate.renderPart(Names.ModelParts.CRATE);
+					GL11.glPopMatrix();
+				}
 			}
 
 			GL11.glPopMatrix();
 		}
+	}
+
+	private float getProgressFloat(int progress)
+	{
+		if (progress < 0) progress = 0;
+		if (progress > 100) progress = 100;
+		float output = (float)progress / 100.0f;
+		return output - 0.5f;
 	}
 
 	private void renderPipePiece(String partName)

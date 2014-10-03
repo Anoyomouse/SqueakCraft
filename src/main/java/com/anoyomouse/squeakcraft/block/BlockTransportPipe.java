@@ -7,11 +7,14 @@ package com.anoyomouse.squeakcraft.block;
 
 import com.anoyomouse.squeakcraft.SqueakCraftMod;
 import com.anoyomouse.squeakcraft.api.ITubeConnectable;
+import com.anoyomouse.squeakcraft.init.ModBlocks;
 import com.anoyomouse.squeakcraft.reference.GUIs;
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.RenderIds;
 import com.anoyomouse.squeakcraft.tileentity.TileEntityStockPile;
 import com.anoyomouse.squeakcraft.tileentity.TileEntityTransportPipe;
+import com.anoyomouse.squeakcraft.transport.TransportCrate;
+import com.anoyomouse.squeakcraft.utility.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -143,16 +146,32 @@ public class BlockTransportPipe extends BlockSqueakCraft implements ITileEntityP
 		super.breakBlock(world, x, y, z, block, metadata);
 	}
 
+	boolean bDebounce;
+
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int a, float b, float c, float d)
 	{
+		if (bDebounce)
+		{
+			bDebounce = false;
+			return true;
+		}
+		bDebounce = true;
+
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te instanceof TileEntityTransportPipe)
 		{
+			LogHelper.info("I was right clicked: " + x + " " + y + " " + z + " " + a + " " + b + " " + c + " " + d);
 
+			TileEntityTransportPipe tep = ((TileEntityTransportPipe) te);
+			tep.getContents().add(new TransportCrate(new ItemStack(ModBlocks.flag, 1), ForgeDirection.NORTH, 0));
+
+			return true;
 		}
-
-		return super.onBlockActivated(world, x, y, z, entityPlayer, p_149727_6_, p_149727_7_, p_149727_8_, p_149727_9_);
+		else
+		{
+			return super.onBlockActivated(world, x, y, z, entityPlayer, a, b, c, d);
+		}
 	}
 
 	public static void CheckTubeConnections(World world, int x, int y, int z)
