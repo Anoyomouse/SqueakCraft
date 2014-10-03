@@ -186,7 +186,7 @@ public class BlockTransportPipe extends BlockSqueakCraft implements ITileEntityP
 				if (tile instanceof ITubeConnectable)
 				{
 					ITubeConnectable tube = (ITubeConnectable) tile;
-					if (tube.IsConnectableOnSide(side.getOpposite())) // && (tube.GetColour() == originator.GetColour() || tube.GetColour() == Colours.NONE || originator.GetColour() == Colours.NONE))
+					if (tube.IsConnectableOnSide(side.getOpposite()))
 					{
 						tube.SetConnectionOnSide(side.getOpposite(), true);
 						originator.SetConnectionOnSide(side, true);
@@ -212,14 +212,13 @@ public class BlockTransportPipe extends BlockSqueakCraft implements ITileEntityP
 				if (tile instanceof ITubeConnectable)
 				{
 					ITubeConnectable tube = (ITubeConnectable) tile;
-					if (tube.IsConnectableOnSide(side.getOpposite())) // && (tube.GetColour() == originator.GetColour() || tube.GetColour() == Colours.NONE || originator.GetColour() == Colours.NONE))
+					if (tube.IsConnectableOnSide(side.getOpposite()))
 					{
 						tube.SetConnectionOnSide(side.getOpposite(), false);
 					}
 					else
 					{
 						tube.SetConnectionOnSide(side.getOpposite(), false);
-						originator.SetConnectionOnSide(side, false);
 					}
 				}
 			}

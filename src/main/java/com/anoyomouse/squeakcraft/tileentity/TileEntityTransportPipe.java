@@ -12,11 +12,13 @@ import com.anoyomouse.squeakcraft.network.PacketHandler;
 import com.anoyomouse.squeakcraft.network.message.MessageTileEntityTransportPipe;
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.transport.TransportCrate;
+import com.anoyomouse.squeakcraft.utility.LogHelper;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import sun.plugin2.message.transport.Transport;
 
@@ -227,24 +229,24 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 		{
 			this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), 1, this.getConnectedSidesByte());
 		}
-
-
 			if (this.crates != null || this.crates.size() > 0)
 			{
 				ArrayList<TransportCrate> markForRemoval = new ArrayList<TransportCrate>();
 				for (TransportCrate crate : this.crates)
 				{
-					crate.addProgress(2);
+					crate.addProgress(5);
 
 					if (crate.getProgress() == 50)
 					{
+						// LogHelper.info("We're in the middle, we need to move in a random direction!");
 						if (this.connectedSides == 1)
 						{
-							for (int i = 0; i < 6; i++)
+							for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 							{
-								if (this.isConnectedOnSide[i])
+								if (this.isConnectedOnSide[direction.ordinal()])
 								{
-									crate.setHeading(ForgeDirection.getOrientation(i));
+									// LogHelper.info("Bounce block, we only have 1 connection: " + direction.toString());
+									crate.setHeading(direction);
 									break;
 								}
 							}
@@ -253,17 +255,40 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 						{
 							// Eject!
 							markForRemoval.add(crate);
+							LogHelper.info("Eject block, we don't have any connections");
+						}
+						else if (this.connectedSides != 2)
+						{
+							boolean hasChanged = false;
+							ArrayList<ForgeDirection> dirs = new ArrayList<ForgeDirection>();
+							for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+							{
+								if (this.isConnectedOnSide[direction.ordinal()] && crate.getHeading().getOpposite() != direction)
+								{
+									dirs.add(direction);
+								}
+							}
+
+							if (!hasChanged)
+							{
+								ForgeDirection newHeading = dirs.get(SqueakCraftMod.instance.random.nextInt(dirs.size()));
+								// LogHelper.info("Block going in " + crate.getHeading() + " going off to " + newHeading + " at random");
+								crate.setHeading(newHeading);
+							}
 						}
 						else
 						{
-							int heading = SqueakCraftMod.instance.random.nextInt(this.connectedSides);
-							int count = 0;
-							for (int i = 0; i < 6; i++)
+							if (this.isConnectedOnSide[crate.getHeading().ordinal()])
 							{
-								if (this.isConnectedOnSide[i]) count++;
-								if (count == heading)
+								continue;
+							}
+
+							for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+							{
+								if (this.isConnectedOnSide[direction.ordinal()] && crate.getHeading().getOpposite() != direction)
 								{
-									crate.setHeading(ForgeDirection.getOrientation(i));
+									// LogHelper.info("Block going in " + crate.getHeading() + " going off to " + direction);
+									crate.setHeading(direction);
 									break;
 								}
 							}
@@ -272,6 +297,7 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 					else if (crate.getProgress() >= 100)
 					{
 						markForRemoval.add(crate);
+						TransferCrateToNextPipe(crate, crate.getHeading());
 					}
 				}
 
@@ -288,7 +314,21 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 	private void ejectTransportCrate(TransportCrate crate)
 	{
 		this.crates.remove(crate);
-		// Eject contents here!
+		if (crate.getProgress() < 100)
+		{
+			// Throw stuff on the floor!
+			// Eject contents here!
+		}
+	}
+
+	private void TransferCrateToNextPipe(TransportCrate crate, ForgeDirection direction)
+	{
+		TileEntity te = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+		if (te instanceof TileEntityTransportPipe)
+		{
+			crate.setProgress(0);
+			((TileEntityTransportPipe) te).getContents().add(crate);
+		}
 	}
 
 	/**
