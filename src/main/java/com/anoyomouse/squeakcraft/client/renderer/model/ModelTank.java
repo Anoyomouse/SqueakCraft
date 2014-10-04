@@ -3,6 +3,7 @@
  *
  * See LICENCE in the project directory for licence information
  */
+
 package com.anoyomouse.squeakcraft.client.renderer.model;
 
 import com.anoyomouse.squeakcraft.reference.Models;
@@ -15,22 +16,22 @@ import net.minecraftforge.client.model.IModelCustom;
  * Created by Anoyomouse on 2014/09/26.
  */
 @SideOnly(Side.CLIENT)
-public class ModelInterface
+public class ModelTank
 {
-	private IModelCustom modelInterface;
+	private IModelCustom modelTank;
 
-	public ModelInterface()
+	public ModelTank()
 	{
-		modelInterface = AdvancedModelLoader.loadModel(Models.INTERFACE);
+		modelTank = AdvancedModelLoader.loadModel(Models.TANK);
 	}
 
 	public void render()
 	{
-		modelInterface.renderAll();
+		modelTank.renderAll();
 	}
 
 	public void renderPart(String partName)
 	{
-		modelInterface.renderPart(partName);
+		modelTank.renderPart(partName);
 	}
 }

@@ -1,11 +1,11 @@
-/**
+/*
  * Copyright (c) David-John Miller AKA Anoyomouse 2014
  *
  * See LICENCE in the project directory for licence information
- **/
+ */
 package com.anoyomouse.squeakcraft.client.renderer.item;
 
-import com.anoyomouse.squeakcraft.client.renderer.model.ModelTransportPipe;
+import com.anoyomouse.squeakcraft.client.renderer.model.ModelNetworkInterface;
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.Textures;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -19,13 +19,13 @@ import org.lwjgl.opengl.GL11;
  * Created by Anoyomouse on 2014/09/26.
  */
 @SideOnly(Side.CLIENT)
-public class ItemRendererTransportPipe implements IItemRenderer
+public class ItemRendererNetworkInterface implements IItemRenderer
 {
-	private final ModelTransportPipe modelTransportPipe;
+	private final ModelNetworkInterface modelNetworkInterface;
 
-	public ItemRendererTransportPipe()
+	public ItemRendererNetworkInterface()
 	{
-		modelTransportPipe = new ModelTransportPipe();
+		modelNetworkInterface = new ModelNetworkInterface();
 	}
 
 	@Override
@@ -46,16 +46,16 @@ public class ItemRendererTransportPipe implements IItemRenderer
 		switch (type)
 		{
 			case ENTITY:
-				this.RenderTransportPipe(0F, 0F, 0F, item.getItemDamage());
+				this.RenderNetworkInterface(0F, 0F, 0F, item.getItemDamage());
 				return;
 			case EQUIPPED:
-				this.RenderTransportPipe(0.5F, 0.25F, 0.0F, item.getItemDamage());
+				this.RenderNetworkInterface(0.5F, 0.25F, 0.0F, item.getItemDamage());
 				return;
 			case EQUIPPED_FIRST_PERSON:
-				this.RenderTransportPipe(0.0F, 0.25F, 0.0F, item.getItemDamage());
+				this.RenderNetworkInterface(0.0F, 0.25F, 0.0F, item.getItemDamage());
 				return;
 			case INVENTORY:
-				this.RenderTransportPipe(0.0F, 0.075F, 0.0F, item.getItemDamage());
+				this.RenderNetworkInterface(0.0F, 0.075F, 0.0F, item.getItemDamage());
 				return;
 			default:
 			{
@@ -63,10 +63,10 @@ public class ItemRendererTransportPipe implements IItemRenderer
 		}
 	}
 
-	private void RenderTransportPipe(float x, float y, float z, int metaData)
+	private void RenderNetworkInterface(float x, float y, float z, int metaData)
 	{
 		// Bind texture
-		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Textures.Model.TRANSPORT_PIPE);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Textures.Model.NETWORK_INTERFACE);
 
 		GL11.glPushMatrix();
 
@@ -76,7 +76,7 @@ public class ItemRendererTransportPipe implements IItemRenderer
 		GL11.glTranslatef(x, y, z);
 
 		// Render
-		modelTransportPipe.renderPart(Names.ModelParts.TRANSPORT_PIPE_CORNER);
+		modelNetworkInterface.renderPart(Names.ModelParts.NETWORK_INTERFACE);
 
 		GL11.glPopMatrix();
 	}

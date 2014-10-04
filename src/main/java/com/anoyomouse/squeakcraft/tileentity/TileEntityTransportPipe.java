@@ -13,14 +13,11 @@ import com.anoyomouse.squeakcraft.network.message.MessageTileEntityTransportPipe
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.transport.TransportCrate;
 import com.anoyomouse.squeakcraft.utility.LogHelper;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import sun.plugin2.message.transport.Transport;
 
 import java.util.ArrayList;
 
@@ -229,83 +226,84 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 		{
 			this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), 1, this.getConnectedSidesByte());
 		}
-			if (this.crates != null || this.crates.size() > 0)
+
+		if (this.crates != null || this.crates.size() > 0)
+		{
+			ArrayList<TransportCrate> markForRemoval = new ArrayList<TransportCrate>();
+			for (TransportCrate crate : this.crates)
 			{
-				ArrayList<TransportCrate> markForRemoval = new ArrayList<TransportCrate>();
-				for (TransportCrate crate : this.crates)
+				crate.addProgress(5);
+
+				if (crate.getProgress() == 50)
 				{
-					crate.addProgress(5);
-
-					if (crate.getProgress() == 50)
+					// LogHelper.info("We're in the middle, we need to move in a random direction!");
+					if (this.connectedSides == 1)
 					{
-						// LogHelper.info("We're in the middle, we need to move in a random direction!");
-						if (this.connectedSides == 1)
+						for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 						{
-							for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+							if (this.isConnectedOnSide[direction.ordinal()])
 							{
-								if (this.isConnectedOnSide[direction.ordinal()])
-								{
-									// LogHelper.info("Bounce block, we only have 1 connection: " + direction.toString());
-									crate.setHeading(direction);
-									break;
-								}
-							}
-						}
-						else if (this.connectedSides == 0)
-						{
-							// Eject!
-							markForRemoval.add(crate);
-							LogHelper.info("Eject block, we don't have any connections");
-						}
-						else if (this.connectedSides != 2)
-						{
-							boolean hasChanged = false;
-							ArrayList<ForgeDirection> dirs = new ArrayList<ForgeDirection>();
-							for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-							{
-								if (this.isConnectedOnSide[direction.ordinal()] && crate.getHeading().getOpposite() != direction)
-								{
-									dirs.add(direction);
-								}
-							}
-
-							if (!hasChanged)
-							{
-								ForgeDirection newHeading = dirs.get(SqueakCraftMod.instance.random.nextInt(dirs.size()));
-								// LogHelper.info("Block going in " + crate.getHeading() + " going off to " + newHeading + " at random");
-								crate.setHeading(newHeading);
-							}
-						}
-						else
-						{
-							if (this.isConnectedOnSide[crate.getHeading().ordinal()])
-							{
-								continue;
-							}
-
-							for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-							{
-								if (this.isConnectedOnSide[direction.ordinal()] && crate.getHeading().getOpposite() != direction)
-								{
-									// LogHelper.info("Block going in " + crate.getHeading() + " going off to " + direction);
-									crate.setHeading(direction);
-									break;
-								}
+								// LogHelper.info("Bounce block, we only have 1 connection: " + direction.toString());
+								crate.setHeading(direction);
+								break;
 							}
 						}
 					}
-					else if (crate.getProgress() >= 100)
+					else if (this.connectedSides == 0)
 					{
+						// Eject!
 						markForRemoval.add(crate);
-						TransferCrateToNextPipe(crate, crate.getHeading());
+						LogHelper.info("Eject block, we don't have any connections");
+					}
+					else if (this.connectedSides != 2)
+					{
+						boolean hasChanged = false;
+						ArrayList<ForgeDirection> dirs = new ArrayList<ForgeDirection>();
+						for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+						{
+							if (this.isConnectedOnSide[direction.ordinal()] && crate.getHeading().getOpposite() != direction)
+							{
+								dirs.add(direction);
+							}
+						}
+
+						if (!hasChanged)
+						{
+							ForgeDirection newHeading = dirs.get(SqueakCraftMod.instance.random.nextInt(dirs.size()));
+							// LogHelper.info("Block going in " + crate.getHeading() + " going off to " + newHeading + " at random");
+							crate.setHeading(newHeading);
+						}
+					}
+					else
+					{
+						if (this.isConnectedOnSide[crate.getHeading().ordinal()])
+						{
+							continue;
+						}
+
+						for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+						{
+							if (this.isConnectedOnSide[direction.ordinal()] && crate.getHeading().getOpposite() != direction)
+							{
+								// LogHelper.info("Block going in " + crate.getHeading() + " going off to " + direction);
+								crate.setHeading(direction);
+								break;
+							}
+						}
 					}
 				}
-
-				for (TransportCrate crate : markForRemoval)
+				else if (crate.getProgress() >= 100)
 				{
-					this.ejectTransportCrate(crate);
+					markForRemoval.add(crate);
+					TransferCrateToNextPipe(crate, crate.getHeading());
 				}
 			}
+
+			for (TransportCrate crate : markForRemoval)
+			{
+				this.ejectTransportCrate(crate);
+			}
+		}
 
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		// PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityTransportPipe(this), new NetworkRegistry.TargetPoint(worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 20));

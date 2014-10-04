@@ -28,10 +28,13 @@ public final class Textures
 
 		public static final ResourceLocation TRANSPORT_PIPE = ResourceLocationHelper.getResourceLocation(MODEL_TEXTURE_LOCATION + "PipeTexture.png");
 
-		public static final ResourceLocation INTERFACE = ResourceLocationHelper.getResourceLocation(MODEL_TEXTURE_LOCATION + "InterfaceTexture.png");
+		public static final ResourceLocation NETWORK_INTERFACE = ResourceLocationHelper.getResourceLocation(MODEL_TEXTURE_LOCATION + "InterfaceTexture.png");
 
 		public static final ResourceLocation CRATE_PILE = ResourceLocationHelper.getResourceLocation(MODEL_TEXTURE_LOCATION + "stockpile_crate.png");
 		public static final ResourceLocation CRATE = ResourceLocationHelper.getResourceLocation(MODEL_TEXTURE_LOCATION + "stockpile_crate.png");
+
+		public static final ResourceLocation TANK = ResourceLocationHelper.getResourceLocation(MODEL_TEXTURE_LOCATION + "TankTexture.png");
+		public static final ResourceLocation TANK_VALVE = ResourceLocationHelper.getResourceLocation(MODEL_TEXTURE_LOCATION + "TankValveTexture.png");
 	}
 
 	public static final class Gui

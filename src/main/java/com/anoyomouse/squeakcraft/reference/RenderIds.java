@@ -15,4 +15,6 @@ public final class RenderIds
 	public static int networkInterface;
 	public static int cratePile;
 	public static int crate;
+	public static int tank;
+	public static int tankValve;
 }

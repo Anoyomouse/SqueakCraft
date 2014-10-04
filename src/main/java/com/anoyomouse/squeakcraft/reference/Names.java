@@ -80,10 +80,20 @@ public final class Names
 		public static final String CRATEPILE_CRATE7 = "PileCrate7";
 		public static final String CRATEPILE_CRATE8 = "PileCrate8";
 
-		public static final String INTERFACE = "Interface";
-		public static final String INTERFACE_PIPE = "InterfacePipe";
+		public static final String NETWORK_INTERFACE = "Interface";
+		public static final String NETWORK_INTERFACE_PIPE = "InterfacePipe";
 
 		public static final String CRATE = "Crate";
+
+		public static final String TANK_WALL = "TankWall";
+		public static final String TANK_EDGE = "TankEdge";
+		public static final String TANK_CORNER = "TankCorner";
+		public static final String TANK_CORNER_SUPPORT = "TankCornerSupport";
+
+		public static final String TANK_VALVE = "TankValve";
+		public static final String TANK_VALVE_PIPE = "TankValvePipe";
+
+		public static final String TANK_SUPPORT = "TankSupport";
 	}
 
 	public static final class Blocks
@@ -91,5 +101,7 @@ public final class Names
 		public static final String FLAG = "flag";
 		public static final String STOCKPILE = "stockPile";
 		public static final String TRANSPORT_PIPE = "transportPipe";
+		public static final String NETWORK_INTERFACE = "networkInterface";
+		public static final String TANK = "tank";
 	}
 }
