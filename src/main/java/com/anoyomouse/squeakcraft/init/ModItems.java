@@ -5,12 +5,15 @@
  **/
 package com.anoyomouse.squeakcraft.init;
 
+import com.anoyomouse.squeakcraft.item.ItemBlockStockPile;
+import com.anoyomouse.squeakcraft.item.ItemBlockTank;
 import com.anoyomouse.squeakcraft.item.ItemSqueakCraft;
 import com.anoyomouse.squeakcraft.item.ItemSqueakLeaf;
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.Reference;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.item.ItemBlock;
 
 @GameRegistry.ObjectHolder(Reference.MODID)
 public class ModItems

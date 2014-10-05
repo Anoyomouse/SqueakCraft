@@ -1,8 +1,8 @@
-/**
+/*
  * Copyright (c) David-John Miller AKA Anoyomouse 2014
  *
  * See LICENCE in the project directory for licence information
- **/
+ */
 package com.anoyomouse.squeakcraft.item;
 
 import com.anoyomouse.squeakcraft.reference.Names;
@@ -21,9 +21,9 @@ import java.util.List;
 /**
  * Created by Anoyomouse on 2014/09/26.
  */
-public class ItemBlockStockPile extends ItemBlock
+public class ItemBlockTank extends ItemBlock
 {
-	public ItemBlockStockPile(Block block)
+	public ItemBlockTank(Block block)
 	{
 		super(block);
 		this.setHasSubtypes(false);
@@ -41,7 +41,7 @@ public class ItemBlockStockPile extends ItemBlock
 		// TODO Localize and add more descriptive text
 		int metaData = itemStack.getItemDamage();
 
-		list.add(StatCollector.translateToLocal("tooltip." + Reference.MODID + ":" + Names.Blocks.STOCKPILE));
+		list.add(StatCollector.translateToLocal("tooltip." + Reference.MODID + ":" + Names.Blocks.TANK + ":" + metaData));
 	}
 
 	@Override

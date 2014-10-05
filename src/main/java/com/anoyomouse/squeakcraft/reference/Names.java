@@ -39,6 +39,7 @@ public final class Names
 
 		public static final String TRANSPORT_PIPE_ITEMS = "ITEMS";
 		public static final String TRANSPORT_PIPE_CRATE_COUNT = "ITEM_COUNT";
+		public static final String METADATA = "METADATA";
 	}
 
 	public static final class Containers
@@ -52,6 +53,8 @@ public final class Names
 	public static final class Items
 	{
 		public static final String SQUEAKLEAF = "squeakLeaf";
+		public static final String STOCK_PILE = "stockPile";
+		public static final String TANK = "tank";
 	}
 
 	public static final class ModelParts

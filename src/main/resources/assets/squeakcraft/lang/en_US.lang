@@ -15,3 +15,7 @@ tile.squeakcraft:stockPile.name=Pile of stock
 tile.squeakcraft:transportPipe.name=Transport pipe
 tile.squeakcraft:networkInterface.name=Network Interface
 tile.squeakcraft:tank.name=Tank
+
+# Tooltip
+tooltip.squeakcraft:stockPile.name=Pile of Stock tooltip
+tooltip.squeakcraft:tank:1.name=Tank (Meta 1)

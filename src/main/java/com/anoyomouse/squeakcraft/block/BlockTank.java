@@ -10,11 +10,13 @@ import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.RenderIds;
 import com.anoyomouse.squeakcraft.tileentity.TileEntityStockPile;
 import com.anoyomouse.squeakcraft.tileentity.TileEntityTank;
+import com.anoyomouse.squeakcraft.utility.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -74,6 +76,14 @@ public class BlockTank extends BlockSqueakCraft implements ITileEntityProvider
 	}
 
 	@Override
+	//World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
+	public int onBlockPlaced(World World, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+	{
+		LogHelper.info("Place tank block at (" + x + "," + y + "," + z + "):" + metadata);
+		return super.onBlockPlaced(World, x, y, z, side, hitX, hitY, hitZ, metadata);
+	}
+
+	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
 	{
 		if (player.isSneaking() && player.getCurrentEquippedItem() != null || world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN))
@@ -82,8 +92,12 @@ public class BlockTank extends BlockSqueakCraft implements ITileEntityProvider
 		}
 		else
 		{
-			if (!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityStockPile)
+			if (!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityTank)
 			{
+				TileEntityTank tank = (TileEntityTank)world.getTileEntity(x, y, z);
+
+				LogHelper.info("Tank block at (" + x + "," + y + "," + z + "):" + world.getBlockMetadata(x, y, z) + " Facing: " + tank.getOrientation());
+
 				// player.openGui(SqueakCraftMod.instance, GUIs.STOCKPILE.ordinal(), world, x, y, z);
 			}
 

@@ -9,6 +9,8 @@ import com.anoyomouse.squeakcraft.creativetab.CreativeTabSqueakCraft;
 import com.anoyomouse.squeakcraft.reference.Reference;
 
 import com.anoyomouse.squeakcraft.tileentity.TileEntitySqueakCraft;
+import com.anoyomouse.squeakcraft.utility.BlockHelper;
+import com.anoyomouse.squeakcraft.utility.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -43,8 +45,7 @@ public class BlockSqueakCraft extends Block
 	@Override
 	public String getUnlocalizedName()
 	{
-		return String.format("tile.%s%s", Reference.MODID.toLowerCase() + ":",
-				getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+		return String.format("tile.%s%s", Reference.MODID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}
 
 	@Override
@@ -71,25 +72,9 @@ public class BlockSqueakCraft extends Block
 	{
 		if (world.getTileEntity(x, y, z) instanceof TileEntitySqueakCraft)
 		{
-			int direction = 0;
-			int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+			ForgeDirection direction = BlockHelper.GetFDFromEntity(entityLiving, true);
 
-			if (facing == 0)
-			{
-				direction = ForgeDirection.NORTH.ordinal();
-			}
-			else if (facing == 1)
-			{
-				direction = ForgeDirection.EAST.ordinal();
-			}
-			else if (facing == 2)
-			{
-				direction = ForgeDirection.SOUTH.ordinal();
-			}
-			else if (facing == 3)
-			{
-				direction = ForgeDirection.WEST.ordinal();
-			}
+			LogHelper.info("Placed block at " + x + "," + y + "," + z + " Facing: " + direction);
 
 			if (itemStack.hasDisplayName())
 			{

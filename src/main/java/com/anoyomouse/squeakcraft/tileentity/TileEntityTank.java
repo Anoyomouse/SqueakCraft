@@ -8,6 +8,7 @@ package com.anoyomouse.squeakcraft.tileentity;
 
 import com.anoyomouse.squeakcraft.network.PacketHandler;
 import com.anoyomouse.squeakcraft.network.message.MessageTileEntitySqueakCraft;
+import com.anoyomouse.squeakcraft.reference.Names;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 

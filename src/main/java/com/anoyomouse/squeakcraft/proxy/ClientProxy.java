@@ -47,9 +47,7 @@ public class ClientProxy extends CommonProxy
 		RenderIds.transportPipe = RenderingRegistry.getNextAvailableRenderId();
 		RenderIds.networkInterface = RenderingRegistry.getNextAvailableRenderId();
 		RenderIds.cratePile = RenderingRegistry.getNextAvailableRenderId();
-		RenderIds.crate = RenderingRegistry.getNextAvailableRenderId();
 		RenderIds.tank = RenderingRegistry.getNextAvailableRenderId();
-		RenderIds.tankValve = RenderingRegistry.getNextAvailableRenderId();
 
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.stockPile), new ItemRendererStockPile());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.transportPipe), new ItemRendererTransportPipe());
