@@ -12,6 +12,7 @@ import com.anoyomouse.squeakcraft.network.PacketHandler;
 import com.anoyomouse.squeakcraft.network.message.MessageTileEntityTransportPipe;
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.transport.TransportCrate;
+import com.anoyomouse.squeakcraft.utility.HelperUtilities;
 import com.anoyomouse.squeakcraft.utility.LogHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -88,27 +89,13 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 	/* ** CALLED FROM PacketHelper ** */
 	public byte getConnectedSidesByte()
 	{
-		byte sides = 0;
-		for (int i = 0; i < 6; i++)
-		{
-			if (isConnectedOnSide[i]) sides |= (1 << i);
-		}
-
-		return sides;
+		return HelperUtilities.getByteFromDirectionArray(isConnectedOnSide);
 	}
 
 	public void setConnectedSidesByte(byte sides)
 	{
 		// Read in the ItemStacks in the inventory from NBT
-		this.connectedSides = 0;
-		for (int i = 0; i < 6; i++)
-		{
-			if ((sides & (1 << i)) != 0)
-			{
-				isConnectedOnSide[i] = true;
-				this.connectedSides++;
-			}
-		}
+		this.connectedSides = HelperUtilities.setDirectionArrayFromByte(sides, this.isConnectedOnSide);
 	}
 
 	@Override

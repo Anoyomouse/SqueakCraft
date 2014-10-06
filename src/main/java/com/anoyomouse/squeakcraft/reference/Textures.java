@@ -37,6 +37,14 @@ public final class Textures
 		public static final ResourceLocation TANK_VALVE = ResourceLocationHelper.getResourceLocation(MODEL_TEXTURE_LOCATION + "TankValveTexture.png");
 	}
 
+	public static final class Blocks
+	{
+		private static final String BLOCK_TEXTURE_LOCATION = "textures/blocks/";
+
+		public static final ResourceLocation PLACEMENT_TANK = ResourceLocationHelper.getResourceLocation(BLOCK_TEXTURE_LOCATION + "placementTank.png");
+		public static final ResourceLocation GOLD_TANK = ResourceLocationHelper.getResourceLocation(BLOCK_TEXTURE_LOCATION + "goldBlock.png");
+	}
+
 	public static final class Gui
 	{
 		private static final String GUI_SHEET_LOCATION = "textures/gui/";

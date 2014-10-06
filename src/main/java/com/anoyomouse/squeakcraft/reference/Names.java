@@ -40,6 +40,12 @@ public final class Names
 		public static final String TRANSPORT_PIPE_ITEMS = "ITEMS";
 		public static final String TRANSPORT_PIPE_CRATE_COUNT = "ITEM_COUNT";
 		public static final String METADATA = "METADATA";
+
+		public static final String LAYER = "LAYER";
+		public static final String IS_MASTER = "IS_MASTER";
+		public static final String MASTER_X = "MASTER_X";
+		public static final String MASTER_Y = "MASTER_Y";
+		public static final String MASTER_Z = "MASTER_Z";
 	}
 
 	public static final class Containers
@@ -53,7 +59,6 @@ public final class Names
 	public static final class Items
 	{
 		public static final String SQUEAKLEAF = "squeakLeaf";
-		public static final String STOCK_PILE = "stockPile";
 		public static final String TANK = "tank";
 	}
 
@@ -106,5 +111,6 @@ public final class Names
 		public static final String TRANSPORT_PIPE = "transportPipe";
 		public static final String NETWORK_INTERFACE = "networkInterface";
 		public static final String TANK = "tank";
+		public static final String PLACEMENT_TANK = "placementTank";
 	}
 }

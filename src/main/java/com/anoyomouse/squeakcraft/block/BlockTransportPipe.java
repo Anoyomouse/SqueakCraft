@@ -146,17 +146,13 @@ public class BlockTransportPipe extends BlockSqueakCraft implements ITileEntityP
 		super.breakBlock(world, x, y, z, block, metadata);
 	}
 
-	boolean bDebounce;
-
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int a, float b, float c, float d)
 	{
-		if (bDebounce)
+		if (!world.isRemote)
 		{
-			bDebounce = false;
-			return true;
+			return false;
 		}
-		bDebounce = true;
 
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te instanceof TileEntityTransportPipe)

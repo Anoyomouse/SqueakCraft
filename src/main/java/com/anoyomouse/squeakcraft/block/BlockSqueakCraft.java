@@ -74,8 +74,6 @@ public class BlockSqueakCraft extends Block
 		{
 			ForgeDirection direction = BlockHelper.GetFDFromEntity(entityLiving, true);
 
-			LogHelper.info("Placed block at " + x + "," + y + "," + z + " Facing: " + direction);
-
 			if (itemStack.hasDisplayName())
 			{
 				((TileEntitySqueakCraft) world.getTileEntity(x, y, z)).setCustomName(itemStack.getDisplayName());

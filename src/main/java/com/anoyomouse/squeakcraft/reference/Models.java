@@ -23,4 +23,5 @@ public class Models
 	public static final ResourceLocation TANK = ResourceLocationHelper.getResourceLocation(MODEL_LOCATION + "Tank.obj");
 	public static final ResourceLocation TANK_VALVE = ResourceLocationHelper.getResourceLocation(MODEL_LOCATION + "TankValve.obj");
 	public static final ResourceLocation TANK_SUPPORT = ResourceLocationHelper.getResourceLocation(MODEL_LOCATION + "TankSupport.obj");
+	public static final ResourceLocation BOX = ResourceLocationHelper.getResourceLocation(MODEL_LOCATION + "Box.obj");
 }

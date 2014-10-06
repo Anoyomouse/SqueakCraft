@@ -23,4 +23,9 @@ public class LogHelper
 	{
 		modLogger.info(data);
 	}
+
+	public static void error(Object data)
+	{
+		modLogger.error(data);
+	}
 }

@@ -13,6 +13,7 @@ import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.Reference;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlockWithMetadata;
 
 @GameRegistry.ObjectHolder(Reference.MODID)
@@ -23,6 +24,7 @@ public class ModBlocks
 	public static final BlockSqueakCraft transportPipe = new BlockTransportPipe();
 	public static final BlockSqueakCraft networkInterface = new BlockNetworkInterface();
 	public static final BlockSqueakCraft tank = new BlockTank();
+	public static final BlockSqueakCraft placementTank = new BlockPlacementTank();
 
 	public static void init()
 	{
@@ -31,5 +33,6 @@ public class ModBlocks
 		GameRegistry.registerBlock(transportPipe, Names.Blocks.TRANSPORT_PIPE);
 		GameRegistry.registerBlock(networkInterface, Names.Blocks.NETWORK_INTERFACE);
 		GameRegistry.registerBlock(tank, ItemBlockTank.class, Names.Blocks.TANK);
+		GameRegistry.registerBlock(placementTank, Names.Blocks.PLACEMENT_TANK);
 	}
 }
