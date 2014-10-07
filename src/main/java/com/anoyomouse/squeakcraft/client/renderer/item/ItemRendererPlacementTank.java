@@ -7,15 +7,10 @@
 package com.anoyomouse.squeakcraft.client.renderer.item;
 
 import com.anoyomouse.squeakcraft.client.renderer.model.ModelBox;
-import com.anoyomouse.squeakcraft.client.renderer.model.ModelTank;
-import com.anoyomouse.squeakcraft.client.renderer.model.ModelTankValve;
-import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.Textures;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;

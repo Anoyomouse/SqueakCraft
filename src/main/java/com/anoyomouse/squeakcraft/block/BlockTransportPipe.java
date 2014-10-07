@@ -5,13 +5,10 @@
  **/
 package com.anoyomouse.squeakcraft.block;
 
-import com.anoyomouse.squeakcraft.SqueakCraftMod;
 import com.anoyomouse.squeakcraft.api.ITubeConnectable;
 import com.anoyomouse.squeakcraft.init.ModBlocks;
-import com.anoyomouse.squeakcraft.reference.GUIs;
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.RenderIds;
-import com.anoyomouse.squeakcraft.tileentity.TileEntityStockPile;
 import com.anoyomouse.squeakcraft.tileentity.TileEntityTransportPipe;
 import com.anoyomouse.squeakcraft.transport.TransportCrate;
 import com.anoyomouse.squeakcraft.utility.LogHelper;
@@ -21,14 +18,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;

@@ -9,18 +9,11 @@ package com.anoyomouse.squeakcraft.tileentity;
 import com.anoyomouse.squeakcraft.network.PacketHandler;
 import com.anoyomouse.squeakcraft.network.message.MessageTileEntityPlacementTank;
 import com.anoyomouse.squeakcraft.reference.Names;
-import com.anoyomouse.squeakcraft.utility.HelperUtilities;
 import com.anoyomouse.squeakcraft.utility.LogHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -84,8 +77,9 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 	@Override
 	public Packet getDescriptionPacket()
 	{
+		Packet packet = PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityPlacementTank(this));
 		LogHelper.info(this.toString() + " Got data packet");
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityPlacementTank(this));
+		return packet;
 	}
 
 	/**
@@ -205,6 +199,7 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 	{
 		if (this.masterEntity == null)
 		{
+			LogHelper.info(this.toString() + " Getting master Entity");
 			if (this.isMaster())
 			{
 				this.masterEntity = this;
@@ -214,8 +209,10 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 				if (this.hasWorldObj())
 				{
 					TileEntity te = this.getWorldObj().getTileEntity(this.masterEntityX, this.masterEntityY,  this.masterEntityZ);
+					LogHelper.info(this.toString() + " master TE: " + te);
 					if (te == null || !(te instanceof TileEntityPlacementTank))
 					{
+						LogHelper.info(this.toString() + " CAN'T FIND MASTER TE");
 						this.masterEntity = null;
 					}
 				}

@@ -10,7 +10,6 @@ import com.anoyomouse.squeakcraft.reference.Reference;
 
 import com.anoyomouse.squeakcraft.tileentity.TileEntitySqueakCraft;
 import com.anoyomouse.squeakcraft.utility.BlockHelper;
-import com.anoyomouse.squeakcraft.utility.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -22,7 +21,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 

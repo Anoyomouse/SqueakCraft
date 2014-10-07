@@ -165,12 +165,7 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 				connectedCount ++;
 				if (connectedCount == 1)
 					lastDir = ForgeDirection.getOrientation(i);
-				if (connectedCount == 2)
-				{
-					biDirectional = (lastDir.getOpposite().ordinal() == i);
-				}
-				else
-					biDirectional = false;
+				biDirectional = (connectedCount == 2) && (lastDir.getOpposite().ordinal() == i);
 			}
 		}
 		this.connectedSides = connectedCount;
@@ -244,7 +239,6 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 					}
 					else if (this.connectedSides != 2)
 					{
-						boolean hasChanged = false;
 						ArrayList<ForgeDirection> dirs = new ArrayList<ForgeDirection>();
 						for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 						{
@@ -254,12 +248,9 @@ public class TileEntityTransportPipe extends TileEntitySqueakCraft implements IT
 							}
 						}
 
-						if (!hasChanged)
-						{
-							ForgeDirection newHeading = dirs.get(SqueakCraftMod.instance.random.nextInt(dirs.size()));
-							// LogHelper.info("Block going in " + crate.getHeading() + " going off to " + newHeading + " at random");
-							crate.setHeading(newHeading);
-						}
+						ForgeDirection newHeading = dirs.get(SqueakCraftMod.instance.random.nextInt(dirs.size()));
+						// LogHelper.info("Block going in " + crate.getHeading() + " going off to " + newHeading + " at random");
+						crate.setHeading(newHeading);
 					}
 					else
 					{

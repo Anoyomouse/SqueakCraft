@@ -6,18 +6,13 @@
 
 package com.anoyomouse.squeakcraft.client.renderer.tileentity;
 
-import com.anoyomouse.squeakcraft.block.BlockTank;
 import com.anoyomouse.squeakcraft.client.renderer.model.ModelBox;
 import com.anoyomouse.squeakcraft.client.renderer.model.ModelTank;
 import com.anoyomouse.squeakcraft.client.renderer.model.ModelTankValve;
-import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.reference.Textures;
 import com.anoyomouse.squeakcraft.tileentity.TileEntityPlacementTank;
-import com.anoyomouse.squeakcraft.tileentity.TileEntityTank;
-import com.anoyomouse.squeakcraft.utility.LogHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 

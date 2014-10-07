@@ -11,12 +11,10 @@ import com.anoyomouse.squeakcraft.reference.RenderIds;
 import com.anoyomouse.squeakcraft.tileentity.TileEntityPlacementTank;
 import com.anoyomouse.squeakcraft.utility.HelperUtilities;
 import com.anoyomouse.squeakcraft.utility.LogHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityEnderChest;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -118,6 +116,7 @@ public class BlockPlacementTank extends BlockSqueakCraft implements ITileEntityP
 		boolean foundAdjacentBlock = false;
 
 		TileEntityPlacementTank masterEntity = null;
+		boolean foundMasterEntity = false;
 		for (ForgeDirection checkDir : ForgeDirection.VALID_DIRECTIONS)
 		{
 			TileEntity te = world.getTileEntity(x + checkDir.offsetX, y + checkDir.offsetY, z + checkDir.offsetZ);
@@ -129,22 +128,24 @@ public class BlockPlacementTank extends BlockSqueakCraft implements ITileEntityP
 					TileEntityPlacementTank tankEntity = (TileEntityPlacementTank) te;
 					if (tankEntity.isMaster())
 					{
-						if (masterEntity != null && masterEntity != tankEntity)
+						if (foundMasterEntity && masterEntity != tankEntity)
 						{
 							//masterEntity.takeOverMaster(tankEntity);
 						}
 
-						if (masterEntity == null)
+						if (!foundMasterEntity)
 						{
+							foundMasterEntity = true;
 							masterEntity = tankEntity;
-							tankEntityPlacementTank.setMasterEntityLocation(masterEntity.xCoord, masterEntity.yCoord, masterEntity.zCoord);
+							tankEntity.setMasterEntityLocation(masterEntity.xCoord, masterEntity.yCoord, masterEntity.zCoord);
 							//masterEntity.getChildren().add(myTileEntity);
 						}
 					}
-					else
+					else if (tankEntityPlacementTank != null &&!( tankEntityPlacementTank.isDeleted()))
 					{
-						if (masterEntity == null)
+						if (!foundMasterEntity)
 						{
+							foundMasterEntity = true;
 							masterEntity = tankEntity.getMasterEntity();
 							tankEntityPlacementTank.setMasterEntityLocation(masterEntity.xCoord, masterEntity.yCoord, masterEntity.zCoord);
 						}
