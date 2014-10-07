@@ -45,7 +45,9 @@ public class TileEntityRendererPlacementTank extends TileEntitySpecialRenderer
 				this.bindTexture(Textures.Blocks.GOLD_TANK);
 			}
 			else
+			{
 				this.bindTexture(Textures.Blocks.PLACEMENT_TANK);
+			}
 
 			GL11.glPushMatrix();
 			// Scale, Translate, Rotate

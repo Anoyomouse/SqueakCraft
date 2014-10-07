@@ -113,6 +113,9 @@ public class BlockPlacementTank extends BlockSqueakCraft implements ITileEntityP
 			return;
 
 		TileEntityPlacementTank tankEntityPlacementTank = (TileEntityPlacementTank)tileEntity;
+		if (tankEntityPlacementTank.isDeleted())
+			return;
+
 		boolean foundAdjacentBlock = false;
 
 		TileEntityPlacementTank masterEntity = null;
@@ -130,18 +133,17 @@ public class BlockPlacementTank extends BlockSqueakCraft implements ITileEntityP
 					{
 						if (foundMasterEntity && masterEntity != tankEntity)
 						{
-							//masterEntity.takeOverMaster(tankEntity);
+							masterEntity.takeOverMaster(tankEntity);
 						}
 
 						if (!foundMasterEntity)
 						{
 							foundMasterEntity = true;
 							masterEntity = tankEntity;
-							tankEntity.setMasterEntityLocation(masterEntity.xCoord, masterEntity.yCoord, masterEntity.zCoord);
-							//masterEntity.getChildren().add(myTileEntity);
+							tankEntityPlacementTank.setMasterEntityLocation(masterEntity.xCoord, masterEntity.yCoord, masterEntity.zCoord);
 						}
 					}
-					else if (tankEntityPlacementTank != null &&!( tankEntityPlacementTank.isDeleted()))
+					else
 					{
 						if (!foundMasterEntity)
 						{
@@ -151,7 +153,7 @@ public class BlockPlacementTank extends BlockSqueakCraft implements ITileEntityP
 						}
 						else if (tankEntity.getMasterEntity() != masterEntity)
 						{
-						//	tankEntity.setMasterEntity(masterEntity);
+							masterEntity.takeOverMaster(tankEntity.getMasterEntity());
 						}
 					}
 				}

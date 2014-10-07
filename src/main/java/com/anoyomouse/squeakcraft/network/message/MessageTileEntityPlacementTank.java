@@ -6,6 +6,7 @@
 package com.anoyomouse.squeakcraft.network.message;
 
 import com.anoyomouse.squeakcraft.tileentity.TileEntityPlacementTank;
+import com.anoyomouse.squeakcraft.utility.LogHelper;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -83,6 +84,7 @@ public class MessageTileEntityPlacementTank extends MessageTileEntitySqueakBase 
 			TileEntityPlacementTank tank = ((TileEntityPlacementTank) tileEntity);
 			tank.setConnectedSides(message.connectedSides);
 			tank.setLayer(message.layer);
+			tank.setIsMaster(message.isMasterEntity);
 			tank.setMasterEntityLocation(message.masterEntityLocationX, message.masterEntityLocationY, message.masterEntityLocationZ);
 		}
 

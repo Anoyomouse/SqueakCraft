@@ -10,10 +10,12 @@ import com.anoyomouse.squeakcraft.network.PacketHandler;
 import com.anoyomouse.squeakcraft.network.message.MessageTileEntityPlacementTank;
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.utility.LogHelper;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,22 +26,27 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 	private final int EVENT_MASTER_UPDATE = 1;
 	private final int EVENT_LAYER_UPDATE = 2;
 
+	// Which sides of the tank are connected to other blocks
 	private byte tankConnections;
+	// Which layer of the tank is this block
 	private int layer = 1;
+	// Is this entity a master entity (i.e. it controls the block object)
 	private boolean isMasterEntity = false;
 
+	// Where is the master object, made this point to itself if it's the master
 	private int masterEntityX;
 	private int masterEntityY;
 	private int masterEntityZ;
 
-	/* SERVER SIDE STUFF */
-	private TileEntityPlacementTank masterEntity;
-	private List<TileEntityPlacementTank> tileList;
-
-	/* END Server Side Stuff */
-
 	// Has this block been deleted
 	private boolean deleted;
+
+	/* THESE SHOULD ONLY EXIST ON THE SERVER */
+	// Reference to the master tile entity
+	private TileEntityPlacementTank masterEntity;
+
+	private boolean masterUpdated;
+	private List<TileEntityPlacementTank> tileList;
 
 	public TileEntityPlacementTank()
 	{
@@ -77,8 +84,9 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		Packet packet = PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityPlacementTank(this));
-		LogHelper.info(this.toString() + " Got data packet");
+		IMessage msg = new MessageTileEntityPlacementTank(this);
+		Packet packet = PacketHandler.INSTANCE.getPacketFrom(msg);
+		LogHelper.info(this.toString() + " Got data packet: " + msg.toString());
 		return packet;
 	}
 
@@ -90,10 +98,12 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 	{
 		if (eventID == EVENT_MASTER_UPDATE)
 		{
+			LogHelper.info("Master Update, set master to " + eventData);
 			this.setIsMaster(eventData == 1);
 		}
-		else if (eventID == 2)
+		else if (eventID == EVENT_LAYER_UPDATE)
 		{
+			LogHelper.info("Layer Update, set layer to " + eventData);
 			this.setLayer(eventData);
 		}
 
@@ -118,7 +128,11 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 				this.masterEntityZ = this.zCoord;
 			}
 
-			this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), EVENT_MASTER_UPDATE, newValue ? 1 : 0);
+			if (this.hasWorldObj() && !this.getWorldObj().isRemote)
+			{
+				this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), EVENT_MASTER_UPDATE, newValue ? 1 : 0);
+			}
+
 			this.markDirty();
 		}
 	}
@@ -133,7 +147,12 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 		if (this.layer != layer)
 		{
 			this.layer = layer;
-			this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), EVENT_LAYER_UPDATE, layer);
+
+			if (this.hasWorldObj() && !this.getWorldObj().isRemote)
+			{
+				this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), EVENT_LAYER_UPDATE, layer);
+			}
+
 			this.markDirty();
 		}
 	}
@@ -215,6 +234,8 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 						LogHelper.info(this.toString() + " CAN'T FIND MASTER TE");
 						this.masterEntity = null;
 					}
+					else
+						this.masterEntity = (TileEntityPlacementTank)te;
 				}
 			}
 		}
@@ -225,8 +246,9 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 	@Override
 	public void markDirty()
 	{
-		super.markDirty();
 		this.masterEntity = null;
+		this.masterUpdated = false;
+		super.markDirty();
 	}
 
 	/**
@@ -237,126 +259,31 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 	public void updateEntity()
 	{
 		super.updateEntity();
-	}
 
-	/*
-	public void updateConnectedEntities(World world, int x, int y, int z)
-	{
-		if (world.isRemote)
+		if (this.hasWorldObj() && !this.getWorldObj().isRemote && !this.masterUpdated && this.masterEntity == null)
 		{
-			return;
-		}
-
-		boolean foundAdjacentBlock = false;
-
-		TileEntityPlacementTank masterEntity = null;
-		for (ForgeDirection checkDir : ForgeDirection.VALID_DIRECTIONS)
-		{
-			TileEntity te = world.getTileEntity(x + checkDir.offsetX, y + checkDir.offsetY, z + checkDir.offsetZ);
-			if (te instanceof TileEntityPlacementTank)
+			TileEntity te = this.getMasterEntity();
+			if (te != null)
 			{
-				if(!((TileEntityPlacementTank) te).isDeleted())
-				{
-					foundAdjacentBlock = true;
-					TileEntityPlacementTank tankEntity = (TileEntityPlacementTank) te;
-					if (tankEntity.isMaster())
-					{
-						if (masterEntity != null && masterEntity != tankEntity)
-						{
-							masterEntity.takeOverMaster(tankEntity);
-						}
-
-						if (masterEntity == null)
-						{
-							masterEntity = tankEntity;
-							masterEntity.getChildren().add(myTileEntity);
-						}
-					}
-					else
-					{
-						if (masterEntity == null)
-						{
-							masterEntity = tankEntity.getMasterEntity();
-							myTileEntity.setMasterEntity(masterEntity);
-						}
-						else if (tankEntity.getMasterEntity() != masterEntity)
-						{
-							tankEntity.setMasterEntity(masterEntity);
-						}
-					}
-				}
+				this.masterUpdated = true;
+				this.masterEntity.addChildToMaster(this);
 			}
-		}
-
-		if (!foundAdjacentBlock)
-		{
-			myTileEntity.setIsMaster(true);
 		}
 	}
 
-	public void checkLinkedBlocks(World world, int x, int y, int z)
+	public void addChildToMaster(TileEntityPlacementTank child)
 	{
-		if (world.isRemote)
-		{
-			// Only run on the server!
-			return;
-		}
-
-		for (ForgeDirection checkDir : ForgeDirection.VALID_DIRECTIONS)
-		{
-			TileEntity te = world.getTileEntity(x + checkDir.offsetX, y + checkDir.offsetY, z + checkDir.offsetZ);
-			if (te instanceof TileEntityPlacementTank)
-			{
-				this.updateConnectedBlocks(world, x + checkDir.offsetX, y + checkDir.offsetY, z + checkDir.offsetZ);
-			}
-		}
-	}*/
-
-
-	/*
-	public void setAsMaster()
-	{
-		LogHelper.info(this.toString() + " setting as master tile entity");
-		this.isMasterEntity = true;
-
-		if (this.hasWorldObj())
-		{
-			if (!worldObj.isRemote)
-			{
-				this.masterEntity = null;
-				if (this.tileList == null)
-					this.tileList = new ArrayList<TileEntityPlacementTank>();
-
-				this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), 1, 1); // Set as master event
-				this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-			}
-		}
-		else
-		{
-			if (this.tileList == null)
-				this.tileList = new ArrayList<TileEntityPlacementTank>();
-			this.masterEntity = null;
-		}
-	}
-
-	public List<TileEntityPlacementTank> getChildren()
-	{
-		if (worldObj.isRemote)
-		{
-			LogHelper.error(this.toString() + " requesting children list on client");
-			return null;
-		}
-
-		LogHelper.info(this.toString() + " getting children list");
-
 		if (this.tileList == null)
-		{
-			LogHelper.info(this.toString() + " is not set as master, but master tile list requested");
-			// I'm a master?
-			this.setAsMaster();
-		}
+			this.tileList = new ArrayList<TileEntityPlacementTank>();
 
-		return this.tileList;
+		if (!this.tileList.contains(child))
+			this.tileList.add(child);
+	}
+
+	public void removeChildFromMaster(TileEntityPlacementTank child)
+	{
+		if (this.tileList.contains(child))
+			this.tileList.remove(child);
 	}
 
 	public void takeOverMaster(TileEntityPlacementTank other)
@@ -376,65 +303,18 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 
 		for (TileEntityPlacementTank child : other.getChildren())
 		{
-			child.setMasterEntity(this);
+			child.setIsMaster(false);
+			child.setMasterEntityLocation(this.xCoord, this.yCoord, this.zCoord);
+			child.markDirty();
 		}
 
-		other.setMasterEntity(this);
+		other.setIsMaster(false);
+		other.setMasterEntityLocation(this.xCoord, this.yCoord, this.zCoord);
+		other.markDirty();
 	}
 
-	public void markBlockForUpdate()
+	private List<TileEntityPlacementTank> getChildren()
 	{
-		if (this.hasWorldObj())
-		{
-			this.getWorldObj().markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-		}
+		return this.tileList;
 	}
-
-	public TileEntityPlacementTank getMasterEntity()
-	{
-		if (this.hasWorldObj())
-		{
-			if (this.masterEntity == null && !this.isMasterEntity)
-			{
-				this.masterEntity = (TileEntityPlacementTank)this.getWorldObj().getTileEntity(this.masterEntityLocation[0], this.masterEntityLocation[1], this.masterEntityLocation[2]);
-			}
-		}
-		return this.masterEntity;
-	}
-
-	public void setMasterEntity(TileEntityPlacementTank master)
-	{
-		if (worldObj.isRemote)
-		{
-			LogHelper.error(this.toString() + " request to take set master entity on client!");
-			return;
-		}
-
-		// This is going to cause a null reference exception .. i need the stacktrace!
-		LogHelper.info(this.toString() + " setting master to " + master.toString());
-		if (this.isMasterEntity)
-		{
-			this.isMasterEntity = false;
-			this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), 1, 0); // Unset as master event
-			this.tileList.clear();
-			this.tileList = null;
-		}
-
-		if (this.masterEntity != null && master != this.masterEntity)
-		{
-			// Notify old master we've detached?
-		}
-
-		if (master != this.masterEntity)
-		{
-			this.masterEntityLocation = new int[] { master.xCoord, master.yCoord, master.zCoord };
-			this.masterEntity = master;
-			if (!master.getChildren().contains(this))
-			{
-				master.getChildren().add(this);
-			}
-
-			this.markDirty();
-		}
-	}*/
 }
