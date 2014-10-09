@@ -10,6 +10,7 @@ import com.anoyomouse.squeakcraft.network.PacketHandler;
 import com.anoyomouse.squeakcraft.network.message.MessageTileEntityPlacementTank;
 import com.anoyomouse.squeakcraft.reference.Names;
 import com.anoyomouse.squeakcraft.utility.LogHelper;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -30,7 +31,8 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 	private byte tankConnections;
 	// Which layer of the tank is this block
 	private int layer = 1;
-	// Is this entity a master entity (i.e. it controls the block object)
+
+// Is this entity a master entity (i.e. it controls the block object)
 	private boolean isMasterEntity = false;
 
 	// Where is the master object, made this point to itself if it's the master
@@ -128,7 +130,7 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 				this.masterEntityZ = this.zCoord;
 			}
 
-			if (this.hasWorldObj() && !this.getWorldObj().isRemote)
+			if (this.hasWorldObj())
 			{
 				this.worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), EVENT_MASTER_UPDATE, newValue ? 1 : 0);
 			}
@@ -249,6 +251,11 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 		this.masterEntity = null;
 		this.masterUpdated = false;
 		super.markDirty();
+
+		if (!this.getWorldObj().isRemote)
+		{
+			PacketHandler.INSTANCE.sendToDimension(new MessageTileEntityPlacementTank(this), this.getWorldObj().provider.dimensionId);
+		}
 	}
 
 	/**
@@ -266,7 +273,7 @@ public class TileEntityPlacementTank extends TileEntitySqueakCraft
 			if (te != null)
 			{
 				this.masterUpdated = true;
-				this.masterEntity.addChildToMaster(this);
+				((TileEntityPlacementTank)te).addChildToMaster(this);
 			}
 		}
 	}

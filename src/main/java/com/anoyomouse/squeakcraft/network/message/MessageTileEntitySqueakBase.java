@@ -74,6 +74,8 @@ public abstract class MessageTileEntitySqueakBase implements IMessage
 
 		if (tileEntity instanceof TileEntitySqueakCraft)
 		{
+			((TileEntitySqueakCraft) tileEntity).setRecievedPacket();
+
 			((TileEntitySqueakCraft) tileEntity).setOrientation(message.orientation);
 			((TileEntitySqueakCraft) tileEntity).setState(message.state);
 			((TileEntitySqueakCraft) tileEntity).setCustomName(message.customName);
@@ -86,6 +88,6 @@ public abstract class MessageTileEntitySqueakBase implements IMessage
 	@Override
 	public String toString()
 	{
-		return String.format("x:%s, y:%s, z:%s, orientation:%s, state:%s, customName:%s, owner:%s", x, y, z, orientation, state, customName, owner);
+		return String.format("(%s, %s, %s), orientation:%s, state:%s, customName:%s, owner:%s", x, y, z, orientation, state, customName, owner);
 	}
 }

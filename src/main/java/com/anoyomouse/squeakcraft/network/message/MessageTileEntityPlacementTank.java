@@ -86,6 +86,11 @@ public class MessageTileEntityPlacementTank extends MessageTileEntitySqueakBase 
 			tank.setLayer(message.layer);
 			tank.setIsMaster(message.isMasterEntity);
 			tank.setMasterEntityLocation(message.masterEntityLocationX, message.masterEntityLocationY, message.masterEntityLocationZ);
+			LogHelper.info("Received data packet from server");
+			LogHelper.info(" Server: ==> " + message.toString());
+			LogHelper.info(" Entity: ==> " + tank.toString());
+
+			tank.markDirty();
 		}
 
 		return null;
@@ -94,6 +99,6 @@ public class MessageTileEntityPlacementTank extends MessageTileEntitySqueakBase 
 	@Override
 	public String toString()
 	{
-		return String.format("MessageTileEntityPlacementTank - %s, connectedSides:%s, layer:%s, isMaster:%s, M@ (%3d,%3d,%3d)", super.toString(), connectedSides, layer, isMasterEntity?"Yes":"No", masterEntityLocationX, masterEntityLocationY, masterEntityLocationZ);
+		return String.format("%s, connectedSides:%s, layer:%s, isMaster:%s, M@ (%3d,%3d,%3d)", super.toString(), connectedSides, layer, isMasterEntity?"Yes":"No", masterEntityLocationX, masterEntityLocationY, masterEntityLocationZ);
 	}
 }

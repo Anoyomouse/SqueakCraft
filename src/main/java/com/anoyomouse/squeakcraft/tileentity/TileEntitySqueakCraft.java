@@ -24,6 +24,8 @@ public class TileEntitySqueakCraft extends TileEntity
 	protected String customName;
 	protected String owner;
 
+	protected boolean hasRecievedPacket=false;
+
 	public TileEntitySqueakCraft()
 	{
 		orientation = ForgeDirection.SOUTH;
@@ -136,5 +138,10 @@ public class TileEntitySqueakCraft extends TileEntity
 	public Packet getDescriptionPacket()
 	{
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntitySqueakCraft(this));
+	}
+
+	public void setRecievedPacket()
+	{
+		this.hasRecievedPacket = true;
 	}
 }
